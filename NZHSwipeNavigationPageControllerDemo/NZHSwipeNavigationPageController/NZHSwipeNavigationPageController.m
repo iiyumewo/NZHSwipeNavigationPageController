@@ -189,7 +189,6 @@
             self.animationView.frame = [self calculateForSelector];
             [self.navigationController.navigationBar addSubview:self.animationView];
         }else if (self.hasButtonBarUnderNavigation == YES) {
-//            NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
             self.animationView.frame = [self calculateForSelector];
             [self.buttonBar addSubview:self.animationView];
         }
@@ -366,13 +365,11 @@
      *
      */
     CGFloat currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:SELECTORWIDTH];
-    NSLog(@"%f", currentOriginPoint);
     CGFloat distance = self.view.bounds.size.width/(self.numberOfButtons+1)+8;
     CGFloat viewX = scrollView.contentOffset.x-self.view.bounds.size.width;
     CGFloat proportion = viewX/self.view.bounds.size.width;
     CGFloat movingX = proportion*distance;
     self.selectorX = currentOriginPoint+movingX;
-    NSLog(@"%f", self.selectorX);
     
     /* The iOS page view controller API is broken.  It lies to us and tells us
      that the currently presented view hasn't changed, but under the hood, it
@@ -423,6 +420,8 @@
     }else if (self.customAnimationBlock != nil) {
         self.customAnimationBlock(self.pageScrollView);
     }
+    
+//    NSLog(@"%f, %f, %f, %f", self.animationView.frame.origin.x, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
