@@ -40,8 +40,10 @@
     if (_animationView == nil) {
         _animationView = [[UIView alloc]init];
         _animationView.backgroundColor = [UIColor cyanColor];
-        _selectorWidth = self.buttonWidth*0.8;
-        _selectorHeight = 4.0;
+        CGRect deafultRect = CGRectMake(0, 0, self.buttonWidth*0.8, 4.0);
+        _animationView.frame = deafultRect;
+//        _selectorWidth = self.buttonWidth*0.8;
+//        _selectorHeight = 4.0;
     }
     return _animationView;
 }
@@ -75,13 +77,11 @@
         self.swipeNavigationController = [[UINavigationController alloc]initWithRootViewController:self];
         self.navigationController.navigationBar.translucent = NO;
         self.title = title;
-        NSLog(@"%@", title);
         
         self.buttonBar = [[ButtonScrollBarUnderNavigation alloc]initWithBarHeight:barHeight buttonWidth:buttonWidth andButtonTitles:buttonTitleArray];
         self.buttonBar.backgroundColor = [UIColor yellowColor];
         self.hasButtonBarUnderNavigation = YES;
         self.viewControllerArray = controllers;
-        NSLog(@"self.viewControllerArray:%@", self.viewControllerArray);
     }
     return self;
 }
@@ -119,16 +119,12 @@
 }
 
 - (void)setFlatAnimationalSelector:(UIView *)animationView {
-    self.selectorWidth = animationView.frame.size.width;
-    self.selectorHeight = animationView.frame.size.height;
     self.animationView = animationView;
     self.isMiddleAnimationView = NO;
     [self createSelector];
 }
 
 - (void)setMiddleAnimationalSelector:(UIView *)animationView {
-    self.selectorWidth = animationView.frame.size.width;
-    self.selectorHeight = animationView.frame.size.height;
     self.animationView = animationView;
     self.isMiddleAnimationView = YES;
     [self createSelector];
@@ -369,12 +365,14 @@
      *  Fundational calculation.
      *
      */
-    CGFloat currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:self.selectorWidth];
+    CGFloat currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:SELECTORWIDTH];
+    NSLog(@"%f", currentOriginPoint);
     CGFloat distance = self.view.bounds.size.width/(self.numberOfButtons+1)+8;
     CGFloat viewX = scrollView.contentOffset.x-self.view.bounds.size.width;
     CGFloat proportion = viewX/self.view.bounds.size.width;
     CGFloat movingX = proportion*distance;
     self.selectorX = currentOriginPoint+movingX;
+    NSLog(@"%f", self.selectorX);
     
     /* The iOS page view controller API is broken.  It lies to us and tells us
      that the currently presented view hasn't changed, but under the hood, it
@@ -402,9 +400,9 @@
     CGFloat minXOffset = scrollView.bounds.size.width - (self.currentPageIndex * scrollView.bounds.size.width);
     CGFloat maxXOffset = (([self.viewControllerArray count] - self.currentPageIndex) * scrollView.bounds.size.width);
     
-    NSLog(@"Page: %ld NextPage: %ld X: %lf MinOffset: %lf MaxOffset: %lf\n", (long)self.currentPageIndex, (long)self.nextPageIndex,
-          (double)scrollView.contentOffset.x,
-          (double)minXOffset, (double)maxXOffset);
+//    NSLog(@"Page: %ld NextPage: %ld X: %lf MinOffset: %lf MaxOffset: %lf\n", (long)self.currentPageIndex, (long)self.nextPageIndex,
+//          (double)scrollView.contentOffset.x,
+//          (double)minXOffset, (double)maxXOffset);
     
     if (!self.shouldBounce) {
         CGRect scrollBounds = scrollView.bounds;

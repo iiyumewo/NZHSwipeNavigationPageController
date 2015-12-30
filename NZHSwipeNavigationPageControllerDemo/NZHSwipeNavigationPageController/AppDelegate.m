@@ -33,7 +33,7 @@
     NSArray *viewControllerArray = @[demo1, demo2, demo3, demo4, demo5];
     NSArray *buttonTextArray = @[@"首页", @"基金", @"主题", @"行业", @"市场"];
     
-    NZHSwipeNavigationPageController *swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"首页" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:50 controllers:viewControllerArray];
+    NZHSwipeNavigationPageController *swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"决策" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:50 controllers:viewControllerArray];
     
     //    NZHSwipeNavigationPageController *swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForSwipeByNavigationBarWithSubTitles:buttonTextArray andControllers:viewControllerArray andButtonWidth:50];
     //    swipeSingleController.animationView.backgroundColor = [UIColor redColor];
@@ -45,22 +45,22 @@
     
     
     //    [swipeSingleController setFlatAnimationalSelector:animationView];
-    [swipeSingleController setMiddleAnimationalSelector:animationView];
+//    [swipeSingleController setMiddleAnimationalSelector:animationView];
+
     
     
-    
-    __block NZHSwipeNavigationPageController *blockDemo = swipeSingleController;
-    swipeSingleController.customAnimationBlock = ^(UIScrollView *pageScrollView) {
-        CGFloat originSelectorHeight = 25;
-        CGFloat changedSelectorHeight;
-        if (blockDemo.positionRatio <= 0.5) {
-            changedSelectorHeight = originSelectorHeight*(1-blockDemo.positionRatio);
-        }else if (blockDemo.positionRatio > 0.5) {
-            changedSelectorHeight = originSelectorHeight*blockDemo.positionRatio;
-        }
-        CGRect rect = CGRectMake(blockDemo.selectorX, blockDemo.selectorY, blockDemo.animationView.frame.size.width, changedSelectorHeight);
-        blockDemo.animationView.frame = rect;
-    };
+//    __block NZHSwipeNavigationPageController *blockDemo = swipeSingleController;
+//    swipeSingleController.customAnimationBlock = ^(UIScrollView *pageScrollView) {
+//        CGFloat originSelectorHeight = 25;
+//        CGFloat changedSelectorHeight;
+//        if (blockDemo.positionRatio <= 0.5) {
+//            changedSelectorHeight = originSelectorHeight*(1-blockDemo.positionRatio);
+//        }else if (blockDemo.positionRatio > 0.5) {
+//            changedSelectorHeight = originSelectorHeight*blockDemo.positionRatio;
+//        }
+//        CGRect rect = CGRectMake(blockDemo.selectorX, blockDemo.selectorY, blockDemo.animationView.frame.size.width, changedSelectorHeight);
+//        blockDemo.animationView.frame = rect;
+//    };
     
     
     
