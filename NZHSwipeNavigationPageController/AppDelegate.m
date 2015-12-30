@@ -43,7 +43,6 @@
     animationView.layer.cornerRadius = 6.0;
     animationView.layer.opacity = 0.3;
     
-    [swipeSingleController.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
     
 //    [swipeSingleController setFlatAnimationalSelector:animationView];
     [swipeSingleController setMiddleAnimationalSelector:animationView];

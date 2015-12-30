@@ -12,28 +12,6 @@
 
 @interface NZHSwipeNavigationPageController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIScrollViewDelegate>
 
-@property (nonatomic, strong) NSArray *viewControllerArray;
-@property (nonatomic, strong) NSArray *subTitleArray;
-@property (nonatomic, assign) NSUInteger buttonWidth;
-
-@property (nonatomic, assign) NSInteger numberOfButtons;
-
-@property (nonatomic, strong) UIScrollView *pageScrollView;
-@property (nonatomic, assign) NSInteger currentPageIndex;
-
-@property (nonatomic, strong) UIPageViewController *pageViewController;
-
-@property (nonatomic, assign) CGFloat selectorWidth;
-@property (nonatomic, assign) CGFloat selectorHeight;
-@property (nonatomic, assign) BOOL isMiddleAnimationView;
-
-@property (nonatomic, assign) BOOL hasButtonBarUnderNavigation;
-@property (nonatomic, strong) NSString *viewTitle;
-
-
-
-
-
 @end
 
 @implementation NZHSwipeNavigationPageController
@@ -94,7 +72,7 @@
         self.numberOfButtons = controllers.count;
         self.swipeNavigationController = [[UINavigationController alloc]initWithRootViewController:self];
         self.navigationController.navigationBar.translucent = NO;
-        self.navigationController.title = title;
+        self.title = title;
         NSLog(@"%@", title);
         
         self.buttonBar = [[ButtonScrollBarUnderNavigation alloc]initWithBarHeight:barHeight buttonWidth:buttonWidth andButtonTitles:buttonTitleArray];
@@ -212,6 +190,12 @@
     self.view.backgroundColor = [UIColor grayColor];
     
     /**
+     *  deafult choice
+     */
+    self.shouldBounce = NO;
+    
+    
+    /**
      *  create a PageViewController
      */
     
@@ -291,6 +275,13 @@
     if (completed) {
         self.currentPageIndex = [self.viewControllerArray indexOfObject:[pageViewController.viewControllers lastObject]];
     }
+    self.nextPageIndex = self.currentPageIndex;
+}
+
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers{
+    
+    id controller = [pendingViewControllers firstObject];
+    self.nextPageIndex = [self.viewControllerArray indexOfObject:controller];
 }
 
 
@@ -300,6 +291,51 @@
  *
  */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    /* The iOS page view controller API is broken.  It lies to us and tells us
+     that the currently presented view hasn't changed, but under the hood, it
+     starts giving the contentOffset relative to the next view.  The only
+     way to detect this brain damage is to notice that the content offset is
+     discontinuous, and pretend that the page changed.
+     */
+    if (self.nextPageIndex > self.currentPageIndex) {
+        /* Scrolling forwards */
+        
+        if (scrollView.contentOffset.x < (self.lastPosition - (.9 * scrollView.bounds.size.width))) {
+            self.currentPageIndex = self.nextPageIndex;
+            //            [self.pageControl setCurrentPage:self.currentIndex];
+        }
+    } else {
+        /* Scrolling backwards */
+        
+        if (scrollView.contentOffset.x > (self.lastPosition + (.9 * scrollView.bounds.size.width))) {
+            self.currentPageIndex = self.nextPageIndex;
+            //            [self.pageControl setCurrentPage:self.currentIndex];
+        }
+    }
+    
+    /* Need to calculate max/min offset for *every* page, not just the first and last. */
+    CGFloat minXOffset = scrollView.bounds.size.width - (self.currentPageIndex * scrollView.bounds.size.width);
+    CGFloat maxXOffset = (([self.viewControllerArray count] - self.currentPageIndex) * scrollView.bounds.size.width);
+    
+    NSLog(@"Page: %ld NextPage: %ld X: %lf MinOffset: %lf MaxOffset: %lf\n", (long)self.currentPageIndex, (long)self.nextPageIndex,
+          (double)scrollView.contentOffset.x,
+          (double)minXOffset, (double)maxXOffset);
+    
+    if (!self.shouldBounce) {
+        CGRect scrollBounds = scrollView.bounds;
+        if (scrollView.contentOffset.x <= minXOffset) {
+            scrollView.contentOffset = CGPointMake(minXOffset, 0);
+            // scrollBounds.origin = CGPointMake(minXOffset, 0);
+        } else if (scrollView.contentOffset.x >= maxXOffset) {
+            scrollView.contentOffset = CGPointMake(maxXOffset, 0);
+            // scrollBounds.origin = CGPointMake(maxXOffset, 0);
+        }
+        [scrollView setBounds:scrollBounds];
+    }
+    self.lastPosition = scrollView.contentOffset.x;
+    
+    
+    
     CGFloat currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:self.selectorWidth];
     CGFloat distance = self.view.bounds.size.width/(self.numberOfButtons+1)+8;
     CGFloat viewX = scrollView.contentOffset.x-self.view.bounds.size.width;
@@ -308,6 +344,23 @@
     CGRect viewRect = CGRectMake(currentOriginPoint+movingX, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
     self.animationView.frame = viewRect;
 }
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    /* Need to calculate max/min offset for *every* page, not just the first and last. */
+    CGFloat minXOffset = scrollView.bounds.size.width - (self.currentPageIndex * scrollView.bounds.size.width);
+    CGFloat maxXOffset = (([self.viewControllerArray count] - self.currentPageIndex) * scrollView.bounds.size.width);
+    
+    if (!self.shouldBounce) {
+        if (scrollView.contentOffset.x <= minXOffset) {
+            *targetContentOffset = CGPointMake(minXOffset, 0);
+        } else if (scrollView.contentOffset.x >= maxXOffset) {
+            *targetContentOffset = CGPointMake(maxXOffset, 0);
+        }
+    }
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

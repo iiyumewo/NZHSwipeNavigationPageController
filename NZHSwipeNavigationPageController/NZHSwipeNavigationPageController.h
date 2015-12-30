@@ -18,6 +18,29 @@
 @property (nonatomic, strong) UIView *animationView;
 @property (nonatomic, strong) ButtonScrollBarUnderNavigation *buttonBar;
 
+
+@property (nonatomic, strong) NSArray *viewControllerArray;
+@property (nonatomic, strong) NSArray *subTitleArray;
+@property (nonatomic, assign) NSUInteger buttonWidth;
+
+@property (nonatomic, assign) NSInteger numberOfButtons;
+
+@property (nonatomic, strong) UIScrollView *pageScrollView;
+@property (nonatomic, assign) NSInteger currentPageIndex;
+@property (nonatomic, assign) NSInteger nextPageIndex;
+@property (nonatomic, assign) CGFloat lastPosition;
+
+@property (nonatomic, strong) UIPageViewController *pageViewController;
+
+@property (nonatomic, assign) CGFloat selectorWidth;
+@property (nonatomic, assign) CGFloat selectorHeight;
+@property (nonatomic, assign) BOOL isMiddleAnimationView;
+
+@property (nonatomic, assign) BOOL hasButtonBarUnderNavigation;
+@property (nonatomic, strong) NSString *viewTitle;
+
+@property (nonatomic, assign) BOOL shouldBounce;
+
 - (instancetype)initForSwipeByNavigationBarWithSubTitles:(NSArray *)subTitles andControllers:(NSArray *)controllers andButtonWidth:(NSUInteger)width;
 - (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers;
 
