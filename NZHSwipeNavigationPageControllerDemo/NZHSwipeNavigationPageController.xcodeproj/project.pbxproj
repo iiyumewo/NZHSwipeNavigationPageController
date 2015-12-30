@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5E144CDE1C2D3E8B00A48023 /* ButtonScrollBarUnderNavigation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E144CDD1C2D3E8B00A48023 /* ButtonScrollBarUnderNavigation.m */; };
+		5EC2F07B1C33E4B700D90958 /* DemoStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EC2F07A1C33E4B700D90958 /* DemoStoryboard.storyboard */; };
+		5EC2F07E1C33E56C00D90958 /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EC2F07D1C33E56C00D90958 /* DemoViewController.m */; };
 		5EE18C051C2CE27B00F0715C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE18C041C2CE27B00F0715C /* main.m */; };
 		5EE18C081C2CE27B00F0715C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE18C071C2CE27B00F0715C /* AppDelegate.m */; };
 		5EE18C101C2CE27B00F0715C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5EE18C0F1C2CE27B00F0715C /* Assets.xcassets */; };
@@ -37,6 +39,9 @@
 /* Begin PBXFileReference section */
 		5E144CDC1C2D3E8B00A48023 /* ButtonScrollBarUnderNavigation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonScrollBarUnderNavigation.h; sourceTree = "<group>"; };
 		5E144CDD1C2D3E8B00A48023 /* ButtonScrollBarUnderNavigation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonScrollBarUnderNavigation.m; sourceTree = "<group>"; };
+		5EC2F07A1C33E4B700D90958 /* DemoStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = DemoStoryboard.storyboard; sourceTree = "<group>"; };
+		5EC2F07C1C33E56C00D90958 /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
+		5EC2F07D1C33E56C00D90958 /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
 		5EE18C001C2CE27B00F0715C /* NZHSwipeNavigationPageController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NZHSwipeNavigationPageController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EE18C041C2CE27B00F0715C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5EE18C061C2CE27B00F0715C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -108,6 +113,9 @@
 				5EE18C371C2CE2D800F0715C /* NZHSwipeNavigationPageController.m */,
 				5E144CDC1C2D3E8B00A48023 /* ButtonScrollBarUnderNavigation.h */,
 				5E144CDD1C2D3E8B00A48023 /* ButtonScrollBarUnderNavigation.m */,
+				5EC2F07A1C33E4B700D90958 /* DemoStoryboard.storyboard */,
+				5EC2F07C1C33E56C00D90958 /* DemoViewController.h */,
+				5EC2F07D1C33E56C00D90958 /* DemoViewController.m */,
 				5EE18C0F1C2CE27B00F0715C /* Assets.xcassets */,
 				5EE18C111C2CE27B00F0715C /* LaunchScreen.storyboard */,
 				5EE18C141C2CE27B00F0715C /* Info.plist */,
@@ -245,6 +253,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5EC2F07B1C33E4B700D90958 /* DemoStoryboard.storyboard in Resources */,
 				5EE18C131C2CE27B00F0715C /* LaunchScreen.storyboard in Resources */,
 				5EE18C101C2CE27B00F0715C /* Assets.xcassets in Resources */,
 			);
@@ -274,6 +283,7 @@
 				5EE18C081C2CE27B00F0715C /* AppDelegate.m in Sources */,
 				5EE18C051C2CE27B00F0715C /* main.m in Sources */,
 				5E144CDE1C2D3E8B00A48023 /* ButtonScrollBarUnderNavigation.m in Sources */,
+				5EC2F07E1C33E56C00D90958 /* DemoViewController.m in Sources */,
 				5EE18C381C2CE2D800F0715C /* NZHSwipeNavigationPageController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

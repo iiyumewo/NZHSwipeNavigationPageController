@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "NZHSwipeNavigationPageController.h"
+
 
 @interface AppDelegate ()
 
@@ -17,57 +17,6 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    
-    UIViewController *demo1 = [[UIViewController alloc]init];
-    UIViewController *demo2 = [[UIViewController alloc]init];
-    UIViewController *demo3 = [[UIViewController alloc]init];
-    UIViewController *demo4 = [[UIViewController alloc]init];
-    UIViewController *demo5 = [[UIViewController alloc]init];
-    demo1.view.backgroundColor = [UIColor redColor];
-    demo2.view.backgroundColor = [UIColor blueColor];
-    demo3.view.backgroundColor = [UIColor grayColor];
-    demo4.view.backgroundColor = [UIColor purpleColor];
-    demo5.view.backgroundColor = [UIColor orangeColor];
-    
-    NSArray *viewControllerArray = @[demo1, demo2, demo3, demo4, demo5];
-    NSArray *buttonTextArray = @[@"首页", @"基金", @"主题", @"行业", @"市场"];
-    
-    NZHSwipeNavigationPageController *swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"决策" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:50 controllers:viewControllerArray];
-    
-    //    NZHSwipeNavigationPageController *swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForSwipeByNavigationBarWithSubTitles:buttonTextArray andControllers:viewControllerArray andButtonWidth:50];
-    //    swipeSingleController.animationView.backgroundColor = [UIColor redColor];
-    
-    UIView *animationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 50, 25)];
-    animationView.backgroundColor = [UIColor redColor];
-    animationView.layer.cornerRadius = 6.0;
-    animationView.layer.opacity = 0.3;
-    
-    
-    //    [swipeSingleController setFlatAnimationalSelector:animationView];
-//    [swipeSingleController setMiddleAnimationalSelector:animationView];
-
-    
-    
-//    __block NZHSwipeNavigationPageController *blockDemo = swipeSingleController;
-//    swipeSingleController.customAnimationBlock = ^(UIScrollView *pageScrollView) {
-//        CGFloat originSelectorHeight = 25;
-//        CGFloat changedSelectorHeight;
-//        if (blockDemo.positionRatio <= 0.5) {
-//            changedSelectorHeight = originSelectorHeight*(1-blockDemo.positionRatio);
-//        }else if (blockDemo.positionRatio > 0.5) {
-//            changedSelectorHeight = originSelectorHeight*blockDemo.positionRatio;
-//        }
-//        CGRect rect = CGRectMake(blockDemo.selectorX, blockDemo.selectorY, blockDemo.animationView.frame.size.width, changedSelectorHeight);
-//        blockDemo.animationView.frame = rect;
-//    };
-    
-    
-    
-    
-    
-    self.window.rootViewController = swipeSingleController.swipeNavigationController;
-    [self.window makeKeyAndVisible];
     // Override point for customization after application launch.
     return YES;
 }
