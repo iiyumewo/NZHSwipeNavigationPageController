@@ -47,9 +47,35 @@
 //    [swipeSingleController setFlatAnimationalSelector:animationView];
     [swipeSingleController setMiddleAnimationalSelector:animationView];
     
+    __block NZHSwipeNavigationPageController *blockDemo = swipeSingleController;
+    CGFloat originHeight = 25;
+    __block CGFloat height;
+    swipeSingleController.customAnimationBlock = ^(UIScrollView *pageScrollView) {
+        if (pageScrollView.contentOffset.x >= blockDemo.view.bounds.size.width) {
+            CGFloat positionRatio = (pageScrollView.contentOffset.x - blockDemo.view.bounds.size.width)/blockDemo.view.bounds.size.width;
+            if (positionRatio <= 0.5) {
+                height = originHeight*(1-positionRatio);
+            }else if (positionRatio > 0.5) {
+                height = originHeight*positionRatio;
+            }
+        }else if (pageScrollView.contentOffset.x <= blockDemo.view.bounds.size.width) {
+            CGFloat positionRatio = (blockDemo.view.bounds.size.width-pageScrollView.contentOffset.x)/blockDemo.view.bounds.size.width;
+            if (positionRatio <= 0.5) {
+                height = originHeight*(1-positionRatio);
+            }else if (positionRatio > 0.5) {
+                height = originHeight*positionRatio;
+            }
+        }
+        CGRect rect = CGRectMake(blockDemo.currentOriginPoint+blockDemo.movingX, blockDemo.selectorY, blockDemo.animationView.frame.size.width, height);
+        blockDemo.animationView.frame = rect;
+    };
+    
+    
+    
+    
+    
     self.window.rootViewController = swipeSingleController.swipeNavigationController;
     [self.window makeKeyAndVisible];
-    
     // Override point for customization after application launch.
     return YES;
 }

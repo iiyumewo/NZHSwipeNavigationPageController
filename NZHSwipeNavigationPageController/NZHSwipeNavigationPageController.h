@@ -15,7 +15,7 @@
 
 @property (nonatomic, strong) UINavigationController *swipeNavigationController;
 @property (nonatomic, strong) NSMutableArray *buttonArray;
-@property (nonatomic, strong) UIView *animationView;
+@property (nonatomic, strong) __block UIView *animationView;
 @property (nonatomic, strong) ButtonScrollBarUnderNavigation *buttonBar;
 
 
@@ -40,6 +40,14 @@
 @property (nonatomic, strong) NSString *viewTitle;
 
 @property (nonatomic, assign) BOOL shouldBounce;
+
+@property (nonatomic, strong) void(^customAnimationBlock)(UIScrollView *pageScrollView);
+
+
+@property (nonatomic, assign) CGFloat currentOriginPoint;
+@property (nonatomic, assign) CGFloat movingX;
+@property (nonatomic, assign) CGFloat selectorY;
+
 
 - (instancetype)initForSwipeByNavigationBarWithSubTitles:(NSArray *)subTitles andControllers:(NSArray *)controllers andButtonWidth:(NSUInteger)width;
 - (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers;

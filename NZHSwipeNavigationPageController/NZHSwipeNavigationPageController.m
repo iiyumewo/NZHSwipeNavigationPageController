@@ -6,6 +6,8 @@
 //  Copyright © 2015年 iiyumewo. All rights reserved.
 //
 
+#define SELECTORWIDTH self.animationView.frame.size.width
+#define SELECTORHEIGHT self.animationView.frame.size.height
 
 #import "NZHSwipeNavigationPageController.h"
 #import "ButtonScrollBarUnderNavigation.h"
@@ -132,32 +134,101 @@
     [self createSelector];
 }
 
+//- (CGRect)calculateForSelector {
+//    CGRect selectorRect = CGRectZero;
+//    if (self.animationView) {
+//        if (self.hasButtonBarUnderNavigation == NO) {
+//            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
+//            if (self.isMiddleAnimationView == NO) {
+//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, 44-self.selectorHeight, self.selectorWidth, self.selectorHeight);
+//            }else if (self.isMiddleAnimationView == YES) {
+//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (44-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
+//            }
+//            self.selectorY = selectorRect.origin.y;
+//            return selectorRect;
+//        }else if (self.hasButtonBarUnderNavigation == YES) {
+//            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
+//            CGRect selectorRect;
+//            if (self.isMiddleAnimationView == NO) {
+//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, self.buttonBar.barHeight-self.selectorHeight, self.selectorWidth, self.selectorHeight);
+//            }else if (self.isMiddleAnimationView == YES) {
+//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (self.buttonBar.barHeight-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
+//                NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
+//            }
+//                        NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
+//            self.selectorY = selectorRect.origin.y;
+//            return selectorRect;
+//        }
+//    }
+//    NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
+//    return selectorRect;
+//}
+
+- (CGRect)calculateForSelector {
+    CGRect selectorRect = CGRectZero;
+    if (self.animationView) {
+        if (self.hasButtonBarUnderNavigation == NO) {
+            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:SELECTORWIDTH];
+            if (self.isMiddleAnimationView == NO) {
+                selectorRect = CGRectMake(originPointOfSelectorFromLeft, 44-SELECTORHEIGHT, SELECTORWIDTH, SELECTORHEIGHT);
+            }else if (self.isMiddleAnimationView == YES) {
+                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (44-SELECTORHEIGHT)/2, SELECTORWIDTH, SELECTORHEIGHT);
+            }
+            self.selectorY = selectorRect.origin.y;
+        }else if (self.hasButtonBarUnderNavigation == YES) {
+            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:SELECTORWIDTH];
+            if (self.isMiddleAnimationView == NO) {
+                selectorRect = CGRectMake(originPointOfSelectorFromLeft, self.buttonBar.barHeight-SELECTORHEIGHT, SELECTORWIDTH, SELECTORHEIGHT);
+            }else if (self.isMiddleAnimationView == YES) {
+                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (self.buttonBar.barHeight-SELECTORHEIGHT)/2, SELECTORWIDTH, SELECTORHEIGHT);
+            }
+            self.selectorY = selectorRect.origin.y;
+        }
+    }
+    return selectorRect;
+}
+
 - (void)createSelector {
     if (self.animationView) {
         if (self.hasButtonBarUnderNavigation == NO) {
-            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
-            CGRect selectorRect;
-            if (self.isMiddleAnimationView == NO) {
-                selectorRect = CGRectMake(originPointOfSelectorFromLeft, 44-self.selectorHeight, self.selectorWidth, self.selectorHeight);
-            }else if (self.isMiddleAnimationView == YES) {
-                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (44-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
-            }
-            self.animationView.frame = selectorRect;
+            self.animationView.frame = [self calculateForSelector];
             [self.navigationController.navigationBar addSubview:self.animationView];
         }else if (self.hasButtonBarUnderNavigation == YES) {
-            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
-            CGRect selectorRect;
-            if (self.isMiddleAnimationView == NO) {
-                selectorRect = CGRectMake(originPointOfSelectorFromLeft, self.buttonBar.barHeight-self.selectorHeight, self.selectorWidth, self.selectorHeight);
-            }else if (self.isMiddleAnimationView == YES) {
-                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (self.buttonBar.barHeight-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
-            }
-            NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
-            self.animationView.frame = selectorRect;
+//            NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
+            self.animationView.frame = [self calculateForSelector];
             [self.buttonBar addSubview:self.animationView];
+            self.selectorY = self.animationView.frame.origin.y;
         }
     }
 }
+
+//- (void)createSelector {
+//    if (self.animationView) {
+//        if (self.hasButtonBarUnderNavigation == NO) {
+//            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
+//            CGRect selectorRect;
+//            if (self.isMiddleAnimationView == NO) {
+//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, 44-self.selectorHeight, self.selectorWidth, self.selectorHeight);
+//            }else if (self.isMiddleAnimationView == YES) {
+//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (44-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
+//            }
+//            self.animationView.frame = selectorRect;
+//            [self.navigationController.navigationBar addSubview:self.animationView];
+//        }else if (self.hasButtonBarUnderNavigation == YES) {
+//            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
+//            CGRect selectorRect;
+//            if (self.isMiddleAnimationView == NO) {
+//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, self.buttonBar.barHeight-self.selectorHeight, self.selectorWidth, self.selectorHeight);
+//            }else if (self.isMiddleAnimationView == YES) {
+//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (self.buttonBar.barHeight-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
+//            }
+//            //            NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
+//            self.animationView.frame = selectorRect;
+//            [self.buttonBar addSubview:self.animationView];
+//            self.selectorY = self.animationView.frame.origin.y;
+//        }
+//    }
+//}
 
 - (void)createButtons {
     for (int i = 0; i < self.numberOfButtons; i++) {
@@ -291,6 +362,17 @@
  *
  */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self calculateForSelector];
+    /**
+     *  Fundational calculation.
+     *
+     */
+    self.currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:self.selectorWidth];
+    CGFloat distance = self.view.bounds.size.width/(self.numberOfButtons+1)+8;
+    CGFloat viewX = scrollView.contentOffset.x-self.view.bounds.size.width;
+    CGFloat proportion = viewX/self.view.bounds.size.width;
+    self.movingX = proportion*distance;
+    
     /* The iOS page view controller API is broken.  It lies to us and tells us
      that the currently presented view hasn't changed, but under the hood, it
      starts giving the contentOffset relative to the next view.  The only
@@ -334,15 +416,12 @@
     }
     self.lastPosition = scrollView.contentOffset.x;
     
-    
-    
-    CGFloat currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:self.selectorWidth];
-    CGFloat distance = self.view.bounds.size.width/(self.numberOfButtons+1)+8;
-    CGFloat viewX = scrollView.contentOffset.x-self.view.bounds.size.width;
-    CGFloat proportion = viewX/self.view.bounds.size.width;
-    CGFloat movingX = proportion*distance;
-    CGRect viewRect = CGRectMake(currentOriginPoint+movingX, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
-    self.animationView.frame = viewRect;
+    if (self.customAnimationBlock == nil) {
+        CGRect viewRect = CGRectMake(self.currentOriginPoint+self.movingX, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
+        self.animationView.frame = viewRect;
+    }else if (self.customAnimationBlock != nil) {
+        self.customAnimationBlock(self.pageScrollView);
+    }
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
