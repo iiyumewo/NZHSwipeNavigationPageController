@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
-It can create a swipe navigation bar favourably and simply with high customizability.
+A container which can contain several controllers with a navigation bar generate automatically.
                    DESC
 
   s.homepage     = "https://github.com/iiyumewo/NZHSwipeNavigationPageController"
@@ -91,7 +91,7 @@ It can create a swipe navigation bar favourably and simply with high customizabi
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "NZHSwipeNavigationPageControllerSourceFiles/*.{h,m}"
+  s.source_files  = "NZHSwipeNavigationPageController/*.{h,m}"
   #s.exclude_files = "Classes/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
