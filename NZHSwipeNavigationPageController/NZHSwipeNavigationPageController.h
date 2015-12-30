@@ -43,10 +43,9 @@
 
 @property (nonatomic, strong) void(^customAnimationBlock)(UIScrollView *pageScrollView);
 
-
-@property (nonatomic, assign) CGFloat currentOriginPoint;
-@property (nonatomic, assign) CGFloat movingX;
 @property (nonatomic, assign) CGFloat selectorY;
+@property (nonatomic, assign) CGFloat selectorX;
+@property (nonatomic, assign) CGFloat positionRatio;
 
 
 - (instancetype)initForSwipeByNavigationBarWithSubTitles:(NSArray *)subTitles andControllers:(NSArray *)controllers andButtonWidth:(NSUInteger)width;

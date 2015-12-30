@@ -174,7 +174,6 @@
             }else if (self.isMiddleAnimationView == YES) {
                 selectorRect = CGRectMake(originPointOfSelectorFromLeft, (44-SELECTORHEIGHT)/2, SELECTORWIDTH, SELECTORHEIGHT);
             }
-            self.selectorY = selectorRect.origin.y;
         }else if (self.hasButtonBarUnderNavigation == YES) {
             CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:SELECTORWIDTH];
             if (self.isMiddleAnimationView == NO) {
@@ -182,9 +181,9 @@
             }else if (self.isMiddleAnimationView == YES) {
                 selectorRect = CGRectMake(originPointOfSelectorFromLeft, (self.buttonBar.barHeight-SELECTORHEIGHT)/2, SELECTORWIDTH, SELECTORHEIGHT);
             }
-            self.selectorY = selectorRect.origin.y;
         }
     }
+    self.selectorY = selectorRect.origin.y;
     return selectorRect;
 }
 
@@ -197,7 +196,6 @@
 //            NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
             self.animationView.frame = [self calculateForSelector];
             [self.buttonBar addSubview:self.animationView];
-            self.selectorY = self.animationView.frame.origin.y;
         }
     }
 }
@@ -356,22 +354,27 @@
 }
 
 
-
 /**
  *  scrollViewDelegate method
  *
  */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self calculateForSelector];
+    if (scrollView.contentOffset.x >= self.view.bounds.size.width) {
+        self.positionRatio = (scrollView.contentOffset.x - self.view.bounds.size.width)/self.view.bounds.size.width;
+    }else if (scrollView.contentOffset.x <= self.view.bounds.size.width) {
+        self.positionRatio = (self.view.bounds.size.width-scrollView.contentOffset.x)/self.view.bounds.size.width;
+    }
     /**
      *  Fundational calculation.
      *
      */
-    self.currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:self.selectorWidth];
+    CGFloat currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:self.selectorWidth];
     CGFloat distance = self.view.bounds.size.width/(self.numberOfButtons+1)+8;
     CGFloat viewX = scrollView.contentOffset.x-self.view.bounds.size.width;
     CGFloat proportion = viewX/self.view.bounds.size.width;
-    self.movingX = proportion*distance;
+    CGFloat movingX = proportion*distance;
+    self.selectorX = currentOriginPoint+movingX;
     
     /* The iOS page view controller API is broken.  It lies to us and tells us
      that the currently presented view hasn't changed, but under the hood, it
@@ -417,7 +420,7 @@
     self.lastPosition = scrollView.contentOffset.x;
     
     if (self.customAnimationBlock == nil) {
-        CGRect viewRect = CGRectMake(self.currentOriginPoint+self.movingX, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
+        CGRect viewRect = CGRectMake(self.selectorX, self.selectorY, self.animationView.frame.size.width, self.animationView.frame.size.height);
         self.animationView.frame = viewRect;
     }else if (self.customAnimationBlock != nil) {
         self.customAnimationBlock(self.pageScrollView);

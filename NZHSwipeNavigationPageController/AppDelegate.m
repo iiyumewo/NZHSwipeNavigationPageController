@@ -35,8 +35,8 @@
     
     NZHSwipeNavigationPageController *swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"首页" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:50 controllers:viewControllerArray];
     
-//    NZHSwipeNavigationPageController *swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForSwipeByNavigationBarWithSubTitles:buttonTextArray andControllers:viewControllerArray andButtonWidth:50];
-//    swipeSingleController.animationView.backgroundColor = [UIColor redColor];
+    //    NZHSwipeNavigationPageController *swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForSwipeByNavigationBarWithSubTitles:buttonTextArray andControllers:viewControllerArray andButtonWidth:50];
+    //    swipeSingleController.animationView.backgroundColor = [UIColor redColor];
     
     UIView *animationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 50, 25)];
     animationView.backgroundColor = [UIColor redColor];
@@ -44,29 +44,21 @@
     animationView.layer.opacity = 0.3;
     
     
-//    [swipeSingleController setFlatAnimationalSelector:animationView];
+    //    [swipeSingleController setFlatAnimationalSelector:animationView];
     [swipeSingleController setMiddleAnimationalSelector:animationView];
     
+    
+    
     __block NZHSwipeNavigationPageController *blockDemo = swipeSingleController;
-    CGFloat originHeight = 25;
-    __block CGFloat height;
     swipeSingleController.customAnimationBlock = ^(UIScrollView *pageScrollView) {
-        if (pageScrollView.contentOffset.x >= blockDemo.view.bounds.size.width) {
-            CGFloat positionRatio = (pageScrollView.contentOffset.x - blockDemo.view.bounds.size.width)/blockDemo.view.bounds.size.width;
-            if (positionRatio <= 0.5) {
-                height = originHeight*(1-positionRatio);
-            }else if (positionRatio > 0.5) {
-                height = originHeight*positionRatio;
-            }
-        }else if (pageScrollView.contentOffset.x <= blockDemo.view.bounds.size.width) {
-            CGFloat positionRatio = (blockDemo.view.bounds.size.width-pageScrollView.contentOffset.x)/blockDemo.view.bounds.size.width;
-            if (positionRatio <= 0.5) {
-                height = originHeight*(1-positionRatio);
-            }else if (positionRatio > 0.5) {
-                height = originHeight*positionRatio;
-            }
+        CGFloat originSelectorHeight = 25;
+        CGFloat changedSelectorHeight;
+        if (blockDemo.positionRatio <= 0.5) {
+            changedSelectorHeight = originSelectorHeight*(1-blockDemo.positionRatio);
+        }else if (blockDemo.positionRatio > 0.5) {
+            changedSelectorHeight = originSelectorHeight*blockDemo.positionRatio;
         }
-        CGRect rect = CGRectMake(blockDemo.currentOriginPoint+blockDemo.movingX, blockDemo.selectorY, blockDemo.animationView.frame.size.width, height);
+        CGRect rect = CGRectMake(blockDemo.selectorX, blockDemo.selectorY, blockDemo.animationView.frame.size.width, changedSelectorHeight);
         blockDemo.animationView.frame = rect;
     };
     
