@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "NZHSwipeNavigationPageController"
-  s.version      = "1.0.0"
+  s.version      = “1.1.0”
   s.summary      = "It can create a swipe navigation bar favourably and simply with high customizability."
 
   # This description is used to generate tags and improve search results.
