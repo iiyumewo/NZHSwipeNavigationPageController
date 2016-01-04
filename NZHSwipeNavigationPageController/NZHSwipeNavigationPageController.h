@@ -32,8 +32,8 @@
 
 @property (nonatomic, strong) UIPageViewController *pageViewController;
 
-@property (nonatomic, assign) CGFloat selectorWidth;
-@property (nonatomic, assign) CGFloat selectorHeight;
+//@property (nonatomic, assign) CGFloat selectorWidth;
+//@property (nonatomic, assign) CGFloat selectorHeight;
 @property (nonatomic, assign) BOOL isMiddleAnimationView;
 
 @property (nonatomic, assign) BOOL hasButtonBarUnderNavigation;
