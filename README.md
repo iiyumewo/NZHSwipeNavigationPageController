@@ -36,13 +36,94 @@ NZHSwipeNavigationPageController is a container for controllers, so we need arra
     NSArray *viewControllerArray = @[demo1, demo2, demo3, demo4, demo5];
     NSArray *buttonTextArray = @[@"Home", @"Fund", @"Topic", @"Industry", @"Market"];
 ```
+---
+![onNavigation](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/onNavigationBar.gif?raw=true)
 
-![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/onNavigationBar.gif?raw=true)
+```objectivec
+    NZHSwipeNavigationPageController *barOnNavigationBarController = 
+    [[NZHSwipeNavigationPageController alloc]initForSwipeByNavigationBarWithSubTitles:buttonTextArray 
+                                                                       andControllers:viewControllerArray 
+                                                                       andButtonWidth:70];
+```
 
-![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/deafultPattern.gif?raw=true)
+![deafultPattern](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/deafultPattern.gif?raw=true)
 
-![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/customBottomSelector.gif?raw=true)
+```objectivec
+    NZHSwipeNavigationPageController *deafultPatternController = 
+    [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" 
+                                                                andButtonTitles:buttonTextArray 
+                                                                      barHeight:40 
+                                                                    buttonWidth:70 
+                                                                    controllers:viewControllerArray];
+```
 
-![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/customMiddleSelector.gif?raw=true)
+![bottomSelector](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/customBottomSelector.gif?raw=true)
 
-![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/customAnimationSelector.gif?raw=true)
+```objectivec
+    //an arbitrary view for custom selector.
+    UIView *selectorView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 8)];
+    selectorView.backgroundColor = [UIColor redColor];
+    selectorView.layer.cornerRadius = 6.0;
+    selectorView.layer.opacity = 0.3;
+
+    NZHSwipeNavigationPageController *customBottomSelectorController = 
+    [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" 
+                                                                andButtonTitles:buttonTextArray 
+                                                                      barHeight:40 
+                                                                    buttonWidth:70 
+                                                                    controllers:viewControllerArray];
+    [customBottomSelectorController setFlatAnimationalSelector:selectorView];
+```
+
+![middleSelector](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/customMiddleSelector.gif?raw=true)
+
+```objectivec
+    //an arbitrary view for custom selector.
+    UIView *selectorView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 25)];
+    selectorView.backgroundColor = [UIColor redColor];
+    selectorView.layer.cornerRadius = 6.0;
+    selectorView.layer.opacity = 0.3;
+    
+    NZHSwipeNavigationPageController *customMiddleSelectorController = 
+    [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" 
+                                                                andButtonTitles:buttonTextArray 
+                                                                      barHeight:40 
+                                                                    buttonWidth:70 
+                                                                    controllers:viewControllerArray];
+    [customMiddleSelectorController setMiddleAnimationalSelector:selectorView];
+```
+
+![customAnimation](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/customAnimationSelector.gif?raw=true)
+```objectivec
+    //an arbitrary view for custom selector.
+    UIView *selectorView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 25)];
+    selectorView.backgroundColor = [UIColor redColor];
+    selectorView.layer.cornerRadius = 6.0;
+    selectorView.layer.opacity = 0.3;
+    
+    NZHSwipeNavigationPageController *customAnimationSelectorController = 
+    [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" 
+                                                                andButtonTitles:buttonTextArray 
+                                                                      barHeight:40 
+                                                                    buttonWidth:70 
+                                                                    controllers:viewControllerArray];
+    [customAnimationSelectorController setMiddleAnimationalSelector:selectorView];
+    
+    /*
+     * positionRatio is a float from 0 to 1 which is the progress between swiping from one button to another button next to.
+     * you can change the shape of selector bwteen its changing period in this block.
+     */
+    __block NZHSwipeNavigationPageController *blockDemo = customAnimationSelectorController;
+    customAnimationSelectorController.customAnimationBlock = ^(UIScrollView *pageScrollView) {
+        CGFloat originSelectorHeight = 25;
+        CGFloat changedSelectorHeight;
+        if (blockDemo.positionRatio <= 0.5) {
+            changedSelectorHeight = originSelectorHeight*(1-blockDemo.positionRatio);
+        }else if (blockDemo.positionRatio > 0.5) {
+            changedSelectorHeight = originSelectorHeight*blockDemo.positionRatio;
+        }
+        CGRect rect = CGRectMake(blockDemo.selectorX, blockDemo.selectorY, blockDemo.animationView.frame.size.width, changedSelectorHeight);
+        blockDemo.animationView.frame = rect;
+    };
+
+```
