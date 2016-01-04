@@ -40,8 +40,10 @@
     if (_animationView == nil) {
         _animationView = [[UIView alloc]init];
         _animationView.backgroundColor = [UIColor cyanColor];
-        _selectorWidth = self.buttonWidth*0.8;
-        _selectorHeight = 4.0;
+        CGRect deafultRect = CGRectMake(0, 0, self.buttonWidth*0.8, 4.0);
+        _animationView.frame = deafultRect;
+//        _selectorWidth = self.buttonWidth*0.8;
+//        _selectorHeight = 4.0;
     }
     return _animationView;
 }
@@ -62,6 +64,48 @@
 }
 
 
+- (void)addMethodToButtons {
+    [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+        [btn addTarget:self action:@selector(tapButtonScrollToTarget:) forControlEvents:UIControlEventTouchDown];
+    }];
+}
+
+
+- (void)tapButtonScrollToTarget:(UIButton *)sender {
+    
+    NSInteger index = [self.buttonArray indexOfObject:sender];
+   
+    __block NZHSwipeNavigationPageController *blockDemo = self;
+    if (index < self.currentPageIndex) {
+        for (NSInteger i = self.currentPageIndex-1; i >= index; i--) {
+//            NSLog(@"%ld", self.currentPageIndex);
+            [self.pageViewController setViewControllers:@[[self.viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete) {
+                if (complete) {
+                    blockDemo.currentPageIndex = i;
+                    NSLog(@"reverseComplete-current:%ld", self.currentPageIndex);
+
+                }
+            }];
+        }
+    }else if(index > self.currentPageIndex) {
+        NSLog(@"current:%ld", self.currentPageIndex);
+        for (NSInteger i = self.currentPageIndex+1; i<=index; i++) {
+            NSLog(@"i:%ld", i);
+            [self.pageViewController setViewControllers:@[[self.viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL complete) {
+                if (complete) {
+                    blockDemo.currentPageIndex = i;
+                    NSLog(@"forwardComplete-current:%ld", self.currentPageIndex);
+                }
+            }];
+        }
+    }
+    NSLog(@"%ld", blockDemo.currentPageIndex);
+}
+
+//- (void)updateCurrentPageIndexWith:(NSInteger)index {
+//    self.currentPageIndex = index;
+//}
+
 
 
 - (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers {
@@ -75,13 +119,13 @@
         self.swipeNavigationController = [[UINavigationController alloc]initWithRootViewController:self];
         self.navigationController.navigationBar.translucent = NO;
         self.title = title;
-        NSLog(@"%@", title);
         
         self.buttonBar = [[ButtonScrollBarUnderNavigation alloc]initWithBarHeight:barHeight buttonWidth:buttonWidth andButtonTitles:buttonTitleArray];
-        self.buttonBar.backgroundColor = [UIColor yellowColor];
+        self.buttonArray = self.buttonBar.buttonArray;
+        [self addMethodToButtons];
+        self.buttonBar.backgroundColor = [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1];
         self.hasButtonBarUnderNavigation = YES;
         self.viewControllerArray = controllers;
-        NSLog(@"self.viewControllerArray:%@", self.viewControllerArray);
     }
     return self;
 }
@@ -119,16 +163,12 @@
 }
 
 - (void)setFlatAnimationalSelector:(UIView *)animationView {
-    self.selectorWidth = animationView.frame.size.width;
-    self.selectorHeight = animationView.frame.size.height;
     self.animationView = animationView;
     self.isMiddleAnimationView = NO;
     [self createSelector];
 }
 
 - (void)setMiddleAnimationalSelector:(UIView *)animationView {
-    self.selectorWidth = animationView.frame.size.width;
-    self.selectorHeight = animationView.frame.size.height;
     self.animationView = animationView;
     self.isMiddleAnimationView = YES;
     [self createSelector];
@@ -193,7 +233,6 @@
             self.animationView.frame = [self calculateForSelector];
             [self.navigationController.navigationBar addSubview:self.animationView];
         }else if (self.hasButtonBarUnderNavigation == YES) {
-//            NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
             self.animationView.frame = [self calculateForSelector];
             [self.buttonBar addSubview:self.animationView];
         }
@@ -239,6 +278,7 @@
         [self.buttonArray addObject:button];
         [self.navigationController.navigationBar addSubview:button];
     }
+    [self addMethodToButtons];
 }
 
 - (CGFloat)calculateForOriginPointOfSelectorFromLeftOfNumber:(NSInteger)number withSelectorWidth:(CGFloat)selectorWidth {
@@ -315,6 +355,14 @@
 }
 
 /**
+ *  viewController delegate methods
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated {
+    
+}
+
+/**
  *  pageViewControllerDataSouce methods
  *
  */
@@ -347,6 +395,11 @@
     self.nextPageIndex = self.currentPageIndex;
 }
 
+- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController
+{
+    return 0;
+}
+
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers{
     
     id controller = [pendingViewControllers firstObject];
@@ -369,7 +422,7 @@
      *  Fundational calculation.
      *
      */
-    CGFloat currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:self.selectorWidth];
+    CGFloat currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:SELECTORWIDTH];
     CGFloat distance = self.view.bounds.size.width/(self.numberOfButtons+1)+8;
     CGFloat viewX = scrollView.contentOffset.x-self.view.bounds.size.width;
     CGFloat proportion = viewX/self.view.bounds.size.width;
@@ -393,7 +446,7 @@
         /* Scrolling backwards */
         
         if (scrollView.contentOffset.x > (self.lastPosition + (.9 * scrollView.bounds.size.width))) {
-            self.currentPageIndex = self.nextPageIndex;
+//            self.currentPageIndex = self.nextPageIndex;
             //            [self.pageControl setCurrentPage:self.currentIndex];
         }
     }
@@ -402,9 +455,9 @@
     CGFloat minXOffset = scrollView.bounds.size.width - (self.currentPageIndex * scrollView.bounds.size.width);
     CGFloat maxXOffset = (([self.viewControllerArray count] - self.currentPageIndex) * scrollView.bounds.size.width);
     
-    NSLog(@"Page: %ld NextPage: %ld X: %lf MinOffset: %lf MaxOffset: %lf\n", (long)self.currentPageIndex, (long)self.nextPageIndex,
-          (double)scrollView.contentOffset.x,
-          (double)minXOffset, (double)maxXOffset);
+//    NSLog(@"Page: %ld NextPage: %ld X: %lf MinOffset: %lf MaxOffset: %lf\n", (long)self.currentPageIndex, (long)self.nextPageIndex,
+//          (double)scrollView.contentOffset.x,
+//          (double)minXOffset, (double)maxXOffset);
     
     if (!self.shouldBounce) {
         CGRect scrollBounds = scrollView.bounds;
@@ -425,6 +478,9 @@
     }else if (self.customAnimationBlock != nil) {
         self.customAnimationBlock(self.pageScrollView);
     }
+    NSLog(@"didScroll-current:%ld", self.currentPageIndex);
+    
+//    NSLog(@"%f, %f, %f, %f", self.animationView.frame.origin.x, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
