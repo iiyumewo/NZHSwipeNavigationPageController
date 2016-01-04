@@ -64,6 +64,48 @@
 }
 
 
+- (void)addMethodToButtons {
+    [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+        [btn addTarget:self action:@selector(tapButtonScrollToTarget:) forControlEvents:UIControlEventTouchDown];
+    }];
+}
+
+
+- (void)tapButtonScrollToTarget:(UIButton *)sender {
+    
+    NSInteger index = [self.buttonArray indexOfObject:sender];
+   
+    __block NZHSwipeNavigationPageController *blockDemo = self;
+    if (index < self.currentPageIndex) {
+        for (NSInteger i = self.currentPageIndex-1; i >= index; i--) {
+//            NSLog(@"%ld", self.currentPageIndex);
+            [self.pageViewController setViewControllers:@[[self.viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete) {
+                if (complete) {
+                    blockDemo.currentPageIndex = i;
+                    NSLog(@"reverseComplete-current:%ld", self.currentPageIndex);
+
+                }
+            }];
+        }
+    }else if(index > self.currentPageIndex) {
+        NSLog(@"current:%ld", self.currentPageIndex);
+        for (NSInteger i = self.currentPageIndex+1; i<=index; i++) {
+            NSLog(@"i:%ld", i);
+            [self.pageViewController setViewControllers:@[[self.viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL complete) {
+                if (complete) {
+                    blockDemo.currentPageIndex = i;
+                    NSLog(@"forwardComplete-current:%ld", self.currentPageIndex);
+                }
+            }];
+        }
+    }
+    NSLog(@"%ld", blockDemo.currentPageIndex);
+}
+
+//- (void)updateCurrentPageIndexWith:(NSInteger)index {
+//    self.currentPageIndex = index;
+//}
+
 
 
 - (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers {
@@ -79,6 +121,8 @@
         self.title = title;
         
         self.buttonBar = [[ButtonScrollBarUnderNavigation alloc]initWithBarHeight:barHeight buttonWidth:buttonWidth andButtonTitles:buttonTitleArray];
+        self.buttonArray = self.buttonBar.buttonArray;
+        [self addMethodToButtons];
         self.buttonBar.backgroundColor = [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1];
         self.hasButtonBarUnderNavigation = YES;
         self.viewControllerArray = controllers;
@@ -234,6 +278,7 @@
         [self.buttonArray addObject:button];
         [self.navigationController.navigationBar addSubview:button];
     }
+    [self addMethodToButtons];
 }
 
 - (CGFloat)calculateForOriginPointOfSelectorFromLeftOfNumber:(NSInteger)number withSelectorWidth:(CGFloat)selectorWidth {
@@ -433,6 +478,7 @@
     }else if (self.customAnimationBlock != nil) {
         self.customAnimationBlock(self.pageScrollView);
     }
+    NSLog(@"didScroll-current:%ld", self.currentPageIndex);
     
 //    NSLog(@"%f, %f, %f, %f", self.animationView.frame.origin.x, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
 }

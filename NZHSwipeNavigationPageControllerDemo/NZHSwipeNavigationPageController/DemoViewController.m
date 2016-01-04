@@ -80,7 +80,8 @@
     
     self.swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:70 controllers:viewControllerArray];
     
-    self.barOnNavigationBarController = [[NZHSwipeNavigationPageController alloc]initForSwipeByNavigationBarWithSubTitles:buttonTextArray andControllers:viewControllerArray andButtonWidth:70];
+    self.barOnNavigationBarController =
+    [[NZHSwipeNavigationPageController alloc]initForSwipeByNavigationBarWithSubTitles:buttonTextArray andControllers:viewControllerArray andButtonWidth:70];
     
     self.customBottomSelectorController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:70 controllers:viewControllerArray];
     [self.customBottomSelectorController setFlatAnimationalSelector:self.animationView];
