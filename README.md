@@ -17,3 +17,15 @@ NZHSwipeNavigationPageController can create a navigation bar favourably and simp
 * Generate a navigation bar automatically which you can choose in many styles.
 * Carry several foundational animation types of page selector.
 * With a high customizability for everything in navigation bar.
+
+# Usage
+
+![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/onNavigationBar.gif?raw=true)
+
+![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/deafultPattern.gif?raw=true)
+
+![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/customBottomSelector.gif?raw=true)
+
+![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/customMiddleSelector.gif?raw=true)
+
+![image](https://github.com/iiyumewo/NZHSwipeNavigationPageController/blob/master/NZHSwipeNavigationPageControllerDemo/ImageForDemo&README/customAnimationSelector.gif?raw=true)
