@@ -9,6 +9,14 @@
 #import "DemoViewController.h"
 #import "NZHSwipeNavigationPageController.h"
 
+#define kColorWithRGB(r, g, b, a) [UIColor colorWithRed:(r)/255.f green:(g)/255.f blue:(b)/255.f alpha:a]
+
+#define FLAT_ORANGE kColorWithRGB(219, 140, 49, 1)
+#define FLAT_ORANGERED kColorWithRGB(216, 81, 55, 1) 
+#define FLAT_ROSERED kColorWithRGB(192, 51, 85, 1)
+#define FLAT_PURPLE kColorWithRGB(127, 52, 100, 1)
+#define FLAT_DARKPURPLE kColorWithRGB(66, 52, 63, 1)
+
 @interface DemoViewController ()
 
 @property (nonatomic, strong) NZHSwipeNavigationPageController *swipeSingleController;
@@ -30,6 +38,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    
 //    [self.navigationController setNavigationBarHidden:YES];
     
     UIViewController *demo1 = [[UIViewController alloc]init];
@@ -37,30 +47,30 @@
     UIViewController *demo3 = [[UIViewController alloc]init];
     UIViewController *demo4 = [[UIViewController alloc]init];
     UIViewController *demo5 = [[UIViewController alloc]init];
-    demo1.view.backgroundColor = [UIColor redColor];
-    demo2.view.backgroundColor = [UIColor blueColor];
-    demo3.view.backgroundColor = [UIColor grayColor];
-    demo4.view.backgroundColor = [UIColor purpleColor];
-    demo5.view.backgroundColor = [UIColor orangeColor];
+    demo1.view.backgroundColor = FLAT_ORANGE;
+    demo2.view.backgroundColor = FLAT_ORANGERED;
+    demo3.view.backgroundColor = FLAT_ROSERED;
+    demo4.view.backgroundColor = FLAT_PURPLE;
+    demo5.view.backgroundColor = FLAT_DARKPURPLE;
     
-    self.animationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 50, 25)];
+    self.animationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 8)];
     self.animationView.backgroundColor = [UIColor redColor];
     self.animationView.layer.cornerRadius = 6.0;
     self.animationView.layer.opacity = 0.3;
     
-    UIView *animationView1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 50, 25)];
+    UIView *animationView1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 25)];
     animationView1.backgroundColor = [UIColor redColor];
     animationView1.layer.cornerRadius = 6.0;
     animationView1.layer.opacity = 0.3;
     
-    UIView *animationView2 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 50, 25)];
+    UIView *animationView2 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 25)];
     animationView2.backgroundColor = [UIColor redColor];
     animationView2.layer.cornerRadius = 6.0;
     animationView2.layer.opacity = 0.3;
 
     
     NSArray *viewControllerArray = @[demo1, demo2, demo3, demo4, demo5];
-    NSArray *buttonTextArray = @[@"首页", @"基金", @"主题", @"行业", @"市场"];
+    NSArray *buttonTextArray = @[@"Home", @"Fund", @"Topic", @"Industry", @"Market"];
     
     
     
@@ -68,18 +78,18 @@
     
     
     
-    self.swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"决策" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:50 controllers:viewControllerArray];
+    self.swipeSingleController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:70 controllers:viewControllerArray];
     
-    self.barOnNavigationBarController = [[NZHSwipeNavigationPageController alloc]initForSwipeByNavigationBarWithSubTitles:buttonTextArray andControllers:viewControllerArray andButtonWidth:50];
+    self.barOnNavigationBarController = [[NZHSwipeNavigationPageController alloc]initForSwipeByNavigationBarWithSubTitles:buttonTextArray andControllers:viewControllerArray andButtonWidth:70];
     
-    self.customBottomSelectorController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"决策" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:50 controllers:viewControllerArray];
+    self.customBottomSelectorController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:70 controllers:viewControllerArray];
     [self.customBottomSelectorController setFlatAnimationalSelector:self.animationView];
     
-    self.customMiddleSelectorController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"决策" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:50 controllers:viewControllerArray];
+    self.customMiddleSelectorController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:70 controllers:viewControllerArray];
     [self.customMiddleSelectorController setMiddleAnimationalSelector:animationView1];
     
     
-    self.customAnimationSelectorController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"决策" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:50 controllers:viewControllerArray];
+    self.customAnimationSelectorController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:70 controllers:viewControllerArray];
     [self.customAnimationSelectorController setMiddleAnimationalSelector:animationView2];
     __block NZHSwipeNavigationPageController *blockDemo = self.customAnimationSelectorController;
     self.customAnimationSelectorController.customAnimationBlock = ^(UIScrollView *pageScrollView) {

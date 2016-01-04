@@ -79,7 +79,7 @@
         self.title = title;
         
         self.buttonBar = [[ButtonScrollBarUnderNavigation alloc]initWithBarHeight:barHeight buttonWidth:buttonWidth andButtonTitles:buttonTitleArray];
-        self.buttonBar.backgroundColor = [UIColor yellowColor];
+        self.buttonBar.backgroundColor = [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1];
         self.hasButtonBarUnderNavigation = YES;
         self.viewControllerArray = controllers;
     }
@@ -310,6 +310,14 @@
 }
 
 /**
+ *  viewController delegate methods
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated {
+    
+}
+
+/**
  *  pageViewControllerDataSouce methods
  *
  */
@@ -340,6 +348,11 @@
         self.currentPageIndex = [self.viewControllerArray indexOfObject:[pageViewController.viewControllers lastObject]];
     }
     self.nextPageIndex = self.currentPageIndex;
+}
+
+- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController
+{
+    return 0;
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers{
