@@ -446,7 +446,7 @@
         /* Scrolling backwards */
         
         if (scrollView.contentOffset.x > (self.lastPosition + (.9 * scrollView.bounds.size.width))) {
-            self.currentPageIndex = self.nextPageIndex;
+//            self.currentPageIndex = self.nextPageIndex;
             //            [self.pageControl setCurrentPage:self.currentIndex];
         }
     }
