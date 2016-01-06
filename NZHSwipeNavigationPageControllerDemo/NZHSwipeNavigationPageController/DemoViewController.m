@@ -29,6 +29,8 @@
 
 @property (nonatomic, strong) NZHSwipeNavigationPageController *customAnimationSelectorController;
 
+@property (nonatomic, strong) NZHSwipeNavigationPageController *buttonWithMarginController;
+
 @property (nonatomic, strong) UIView *animationView;
 
 @end
@@ -105,7 +107,7 @@
         blockDemo.animationView.frame = rect;
     };
     
-    
+    self.buttonWithMarginController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:70 controllers:viewControllerArray withButtonMargin:1.0];
     
     
 
@@ -183,6 +185,14 @@
     [self presentViewController:self.customAnimationSelectorController.navigationController animated:YES completion:nil];
 }
 
+- (IBAction)toButtonWithMargin:(UIButton *)sender {
+    self.buttonWithMarginController.navigationItem.leftBarButtonItem =
+    [[UIBarButtonItem alloc]initWithTitle:@"Back"
+                                    style:UIBarButtonItemStylePlain
+                                   target:self
+                                   action:@selector(backToDemoViewController:)];
+    [self presentViewController:self.buttonWithMarginController.navigationController animated:YES completion:nil];
+}
 
 - (void)backToDemoViewController:(UIButton *)sender {
 //    [(UINavigationController *)[self viewController:sender] dismissViewControllerAnimated:YES completion:nil];
@@ -192,6 +202,7 @@
     [self.customBottomSelectorController.navigationController dismissViewControllerAnimated:YES completion:nil];
     [self.customMiddleSelectorController.navigationController dismissViewControllerAnimated:YES completion:nil];
     [self.customAnimationSelectorController.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [self.buttonWithMarginController.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {

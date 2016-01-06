@@ -18,6 +18,10 @@
 
 @implementation NZHSwipeNavigationPageController
 
+
+
+
+
 /**
  *  lazy methods going on
  *
@@ -59,17 +63,23 @@
 
 
 
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
-}
+//- (UIStatusBarStyle)preferredStatusBarStyle {
+//    return UIStatusBarStyleLightContent;
+//}
 
 
+
+
+
+
+/**
+ *  make the buttons can scroll to the page it specified by one tap.
+ */
 - (void)addMethodToButtons {
     [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
         [btn addTarget:self action:@selector(tapButtonScrollToTarget:) forControlEvents:UIControlEventTouchDown];
     }];
 }
-
 
 - (void)tapButtonScrollToTarget:(UIButton *)sender {
     
@@ -82,32 +92,34 @@
             [self.pageViewController setViewControllers:@[[self.viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete) {
                 if (complete) {
                     blockDemo.currentPageIndex = i;
-                    NSLog(@"reverseComplete-current:%ld", self.currentPageIndex);
-
+//                    NSLog(@"reverseComplete-current:%ld", self.currentPageIndex);
                 }
             }];
         }
     }else if(index > self.currentPageIndex) {
-        NSLog(@"current:%ld", self.currentPageIndex);
+//        NSLog(@"current:%ld", self.currentPageIndex);
         for (NSInteger i = self.currentPageIndex+1; i<=index; i++) {
-            NSLog(@"i:%ld", i);
+//            NSLog(@"i:%ld", i);
             [self.pageViewController setViewControllers:@[[self.viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL complete) {
                 if (complete) {
                     blockDemo.currentPageIndex = i;
-                    NSLog(@"forwardComplete-current:%ld", self.currentPageIndex);
+//                    NSLog(@"forwardComplete-current:%ld", self.currentPageIndex);
                 }
             }];
         }
     }
-    NSLog(@"%ld", blockDemo.currentPageIndex);
+//    NSLog(@"%ld", blockDemo.currentPageIndex);
 }
 
-//- (void)updateCurrentPageIndexWith:(NSInteger)index {
-//    self.currentPageIndex = index;
-//}
 
 
 
+
+
+/**
+ *  core init methods.
+ *
+ */
 - (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers {
     self = [super init];
     if (self) {
@@ -119,9 +131,10 @@
         self.swipeNavigationController = [[UINavigationController alloc]initWithRootViewController:self];
         self.navigationController.navigationBar.translucent = NO;
         self.title = title;
+        self.subTitleArray = buttonTitleArray;
         
         self.buttonBar = [[ButtonScrollBarUnderNavigation alloc]initWithBarHeight:barHeight buttonWidth:buttonWidth andButtonTitles:buttonTitleArray];
-        self.buttonArray = self.buttonBar.buttonArray;
+//        self.buttonArray = self.buttonBar.buttonArray;
         [self addMethodToButtons];
         self.buttonBar.backgroundColor = [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1];
         self.hasButtonBarUnderNavigation = YES;
@@ -129,7 +142,6 @@
     }
     return self;
 }
-
 
 - (instancetype)initForSwipeByNavigationBarWithSubTitles:(NSArray *)subTitles andControllers:(NSArray *)controllers andButtonWidth:(NSUInteger)width {
     self = [super init];
@@ -150,18 +162,42 @@
     return self;
 }
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        /**
-         navigationController getodaze!
-         */
-        self.swipeNavigationController = [[UINavigationController alloc]initWithRootViewController:self];
-        self.navigationController.navigationBar.translucent = NO;
-    }
+- (instancetype)initForSwipeByNavigationBarWithSubTitles:(NSArray *)subTitles andControllers:(NSArray *)controllers andButtonWidth:(NSUInteger)width WithButtonMargin:(CGFloat)buttonMargin {
+    self = [self initForSwipeByNavigationBarWithSubTitles:subTitles andControllers:controllers andButtonWidth:width];
+    self.marginOfButton = buttonMargin;
     return self;
 }
 
+- (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers withButtonMargin:(CGFloat)buttonMargin {
+    self = [self initForBarUnderNavigationWithTitle:title andButtonTitles:buttonTitleArray barHeight:barHeight buttonWidth:buttonWidth controllers:controllers];
+    self.marginOfButton = buttonMargin;
+    return self;
+}
+
+
+
+//- (instancetype)init {
+//    self = [super init];
+//    if (self) {
+//        /**
+//         navigationController getodaze!
+//         */
+//        self.swipeNavigationController = [[UINavigationController alloc]initWithRootViewController:self];
+//        self.navigationController.navigationBar.translucent = NO;
+//    }
+//    return self;
+//}
+
+
+
+
+
+
+/**
+ *  methods to replace the deafult selector with a custom view.
+ *  calculating for selector's birth-place and to draw it on the bar.
+ *
+ */
 - (void)setFlatAnimationalSelector:(UIView *)animationView {
     self.animationView = animationView;
     self.isMiddleAnimationView = NO;
@@ -173,36 +209,6 @@
     self.isMiddleAnimationView = YES;
     [self createSelector];
 }
-
-//- (CGRect)calculateForSelector {
-//    CGRect selectorRect = CGRectZero;
-//    if (self.animationView) {
-//        if (self.hasButtonBarUnderNavigation == NO) {
-//            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
-//            if (self.isMiddleAnimationView == NO) {
-//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, 44-self.selectorHeight, self.selectorWidth, self.selectorHeight);
-//            }else if (self.isMiddleAnimationView == YES) {
-//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (44-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
-//            }
-//            self.selectorY = selectorRect.origin.y;
-//            return selectorRect;
-//        }else if (self.hasButtonBarUnderNavigation == YES) {
-//            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
-//            CGRect selectorRect;
-//            if (self.isMiddleAnimationView == NO) {
-//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, self.buttonBar.barHeight-self.selectorHeight, self.selectorWidth, self.selectorHeight);
-//            }else if (self.isMiddleAnimationView == YES) {
-//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (self.buttonBar.barHeight-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
-//                NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
-//            }
-//                        NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
-//            self.selectorY = selectorRect.origin.y;
-//            return selectorRect;
-//        }
-//    }
-//    NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
-//    return selectorRect;
-//}
 
 - (CGRect)calculateForSelector {
     CGRect selectorRect = CGRectZero;
@@ -227,58 +233,17 @@
     return selectorRect;
 }
 
+
+
 - (void)createSelector {
     if (self.animationView) {
+        self.animationView.frame = [self calculateForSelector];
         if (self.hasButtonBarUnderNavigation == NO) {
-            self.animationView.frame = [self calculateForSelector];
             [self.navigationController.navigationBar addSubview:self.animationView];
         }else if (self.hasButtonBarUnderNavigation == YES) {
-            self.animationView.frame = [self calculateForSelector];
             [self.buttonBar addSubview:self.animationView];
         }
     }
-}
-
-//- (void)createSelector {
-//    if (self.animationView) {
-//        if (self.hasButtonBarUnderNavigation == NO) {
-//            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
-//            CGRect selectorRect;
-//            if (self.isMiddleAnimationView == NO) {
-//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, 44-self.selectorHeight, self.selectorWidth, self.selectorHeight);
-//            }else if (self.isMiddleAnimationView == YES) {
-//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (44-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
-//            }
-//            self.animationView.frame = selectorRect;
-//            [self.navigationController.navigationBar addSubview:self.animationView];
-//        }else if (self.hasButtonBarUnderNavigation == YES) {
-//            CGFloat originPointOfSelectorFromLeft = [self calculateForOriginPointOfSelectorFromLeftOfNumber:0 withSelectorWidth:self.selectorWidth];
-//            CGRect selectorRect;
-//            if (self.isMiddleAnimationView == NO) {
-//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, self.buttonBar.barHeight-self.selectorHeight, self.selectorWidth, self.selectorHeight);
-//            }else if (self.isMiddleAnimationView == YES) {
-//                selectorRect = CGRectMake(originPointOfSelectorFromLeft, (self.buttonBar.barHeight-self.selectorHeight)/2, self.selectorWidth, self.selectorHeight);
-//            }
-//            //            NSLog(@"%f, %f, %f, %f", selectorRect.origin.x, selectorRect.origin.y, selectorRect.size.width, selectorRect.size.height);
-//            self.animationView.frame = selectorRect;
-//            [self.buttonBar addSubview:self.animationView];
-//            self.selectorY = self.animationView.frame.origin.y;
-//        }
-//    }
-//}
-
-- (void)createButtons {
-    for (int i = 0; i < self.numberOfButtons; i++) {
-        CGFloat originPointOfButtonFromeLeft = (self.view.bounds.size.width-self.numberOfButtons*self.buttonWidth)/(self.numberOfButtons+1)*(i+1) + self.buttonWidth*i;
-        CGRect rect = CGRectMake (originPointOfButtonFromeLeft, 0, self.buttonWidth, self.navigationController.navigationBar.frame.size.height);
-        UIButton *button = [[UIButton alloc]initWithFrame:rect];
-        [button setTitle:[self.subTitleArray objectAtIndex:i]
-                forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor brownColor] forState:UIControlStateNormal];
-        [self.buttonArray addObject:button];
-        [self.navigationController.navigationBar addSubview:button];
-    }
-    [self addMethodToButtons];
 }
 
 - (CGFloat)calculateForOriginPointOfSelectorFromLeftOfNumber:(NSInteger)number withSelectorWidth:(CGFloat)selectorWidth {
@@ -286,6 +251,71 @@
     CGFloat originPointOfSelectorFromLeft = middlePointOfButtonFromeLeft-selectorWidth/2;
     return originPointOfSelectorFromLeft;
 }
+
+
+
+
+
+
+
+
+
+- (void)createButtons {
+    if (self.marginOfButton == 0) {
+        for (int i = 0; i < self.numberOfButtons; i++) {
+            CGFloat originPointOfButtonFromeLeft = (self.view.bounds.size.width-self.numberOfButtons*self.buttonWidth)/(self.numberOfButtons+1)*(i+1) + self.buttonWidth*i;
+            CGRect rect = CGRectMake (originPointOfButtonFromeLeft, 0, self.buttonWidth, self.navigationController.navigationBar.frame.size.height);
+            UIButton *button = [[UIButton alloc]initWithFrame:rect];
+            [button setTitle:[self.subTitleArray objectAtIndex:i]
+                    forState:UIControlStateNormal];
+            [button setTitleColor:[UIColor brownColor] forState:UIControlStateNormal];
+            [self.buttonArray addObject:button];
+            if (self.buttonBar == nil) {
+                [self.navigationController.navigationBar addSubview:button];
+            }else if (self.buttonBar != nil) {
+                [self.buttonBar addSubview:button];
+            }
+        }
+        [self addMethodToButtons];
+    }else if (self.marginOfButton != 0) {
+        for (int i = 0; i < self.numberOfButtons; i++) {
+            CGRect rect = [self calculateFrameOfButtonOfNumber:i withButtonWidth:self.buttonWidth];
+            UIButton *button = [[UIButton alloc]initWithFrame:rect];
+            [button setTitle:[self.subTitleArray objectAtIndex:i]
+                    forState:UIControlStateNormal];
+            [button setTitleColor:[UIColor brownColor] forState:UIControlStateNormal];
+            [self.buttonArray addObject:button];
+            if (self.buttonBar == nil) {
+                [self.navigationController.navigationBar addSubview:button];
+            }else if (self.buttonBar != nil) {
+                [self.buttonBar addSubview:button];
+            }
+        }
+    }
+}
+
+- (CGRect)calculateFrameOfButtonOfNumber:(NSInteger)number withButtonWidth:(CGFloat)buttonWidth {
+    if (self.marginOfButton != 0) {
+        CGRect rect = CGRectZero;
+        CGFloat buttonBarHeight = CGRectGetHeight(self.buttonBar.frame);
+        CGFloat originPointOfButtonFromeLeft = 0;
+        if (number == 0) {
+            originPointOfButtonFromeLeft = self.marginOfButton;
+            rect = CGRectMake(originPointOfButtonFromeLeft, 0, self.buttonWidth, buttonBarHeight);
+            NSLog(@"%f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+            return rect;
+        }else if (number != 0) {
+            CGFloat equalDistance = (self.buttonBar.frame.size.width-self.marginOfButton*2-self.buttonWidth*self.numberOfButtons)/(self.numberOfButtons-1);
+            originPointOfButtonFromeLeft = self.marginOfButton+self.buttonWidth+number*equalDistance+(number-1)*self.buttonWidth;
+            rect = CGRectMake(originPointOfButtonFromeLeft, 0, self.buttonWidth, buttonBarHeight);
+            return rect;
+        }
+    }
+    NSLog(@"calculating button frame error");
+    return CGRectZero;
+}
+
+
 
 
 
@@ -333,13 +363,15 @@
      *  create all segments
      */
     
-    [self createSelector];
+    
     
     if (self.hasButtonBarUnderNavigation == NO) {
         [self createButtons];
     }else if (self.hasButtonBarUnderNavigation == YES) {
         [self.view addSubview:self.buttonBar];
+        [self createButtons];
     }
+    [self createSelector];
 }
 
 /**
@@ -478,7 +510,7 @@
     }else if (self.customAnimationBlock != nil) {
         self.customAnimationBlock(self.pageScrollView);
     }
-    NSLog(@"didScroll-current:%ld", self.currentPageIndex);
+//    NSLog(@"didScroll-current:%ld", self.currentPageIndex);
     
 //    NSLog(@"%f, %f, %f, %f", self.animationView.frame.origin.x, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
 }

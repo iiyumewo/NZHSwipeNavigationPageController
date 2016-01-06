@@ -47,9 +47,15 @@
 @property (nonatomic, assign) CGFloat selectorX;
 @property (nonatomic, assign) CGFloat positionRatio;
 
+@property (nonatomic, assign) CGFloat marginOfButton;
+
 
 - (instancetype)initForSwipeByNavigationBarWithSubTitles:(NSArray *)subTitles andControllers:(NSArray *)controllers andButtonWidth:(NSUInteger)width;
 - (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers;
+
+- (instancetype)initForSwipeByNavigationBarWithSubTitles:(NSArray *)subTitles andControllers:(NSArray *)controllers andButtonWidth:(NSUInteger)width WithButtonMargin:(CGFloat)buttonMargin;
+- (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers withButtonMargin:(CGFloat)buttonMargin;
+
 
 - (void)setFlatAnimationalSelector:(UIView *)animationView;
 - (void)setMiddleAnimationalSelector:(UIView *)animationView;
