@@ -49,6 +49,9 @@
 
 @property (nonatomic, assign) CGFloat marginOfButton;
 
+@property (nonatomic, strong) UIColor *selectedButtonColor;
+@property (nonatomic, strong) UIColor *normalButtonColor;
+
 
 - (instancetype)initForSwipeByNavigationBarWithSubTitles:(NSArray *)subTitles andControllers:(NSArray *)controllers andButtonWidth:(NSUInteger)width;
 - (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers;
@@ -59,6 +62,8 @@
 
 - (void)setFlatAnimationalSelector:(UIView *)animationView;
 - (void)setMiddleAnimationalSelector:(UIView *)animationView;
+
+
 
 
 @end

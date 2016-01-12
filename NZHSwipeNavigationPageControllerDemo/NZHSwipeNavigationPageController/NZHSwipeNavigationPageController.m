@@ -21,7 +21,6 @@
 
 
 
-
 /**
  *  lazy methods going on
  *
@@ -59,13 +58,25 @@
     return _buttonArray;
 }
 
+- (UIColor *)selectedButtonColor {
+    if (_selectedButtonColor == nil) {
+        _selectedButtonColor = [[UIColor alloc]init];
+    }
+    return _selectedButtonColor;
+}
+
+- (UIColor *)normalButtonColor {
+    if (_normalButtonColor == nil) {
+        _normalButtonColor = [[UIColor alloc]init];
+    }
+    return _normalButtonColor;
+}
 
 
 
 
-//- (UIStatusBarStyle)preferredStatusBarStyle {
-//    return UIStatusBarStyleLightContent;
-//}
+
+
 
 
 
@@ -149,6 +160,8 @@
         /**
          navigationController getodaze!
          */
+        self.buttonWidth = width;
+        self.numberOfButtons = controllers.count;
         self.swipeNavigationController = [[UINavigationController alloc]initWithRootViewController:self];
         self.navigationController.navigationBar.translucent = NO;
         
@@ -292,6 +305,7 @@
             }
         }
     }
+    NSLog(@"after:%ld", self.buttonArray.count);
 }
 
 - (CGRect)calculateFrameOfButtonOfNumber:(NSInteger)number withButtonWidth:(CGFloat)buttonWidth {
@@ -367,11 +381,32 @@
     
     if (self.hasButtonBarUnderNavigation == NO) {
         [self createButtons];
+        
     }else if (self.hasButtonBarUnderNavigation == YES) {
         [self.view addSubview:self.buttonBar];
         [self createButtons];
     }
     [self createSelector];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (_normalButtonColor != nil) {
+        [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+            if (_selectedButtonColor != nil) {
+                if (idx == 0) {
+                    [btn setTitleColor:_selectedButtonColor forState:UIControlStateNormal];
+                }else if (idx != 0) {
+                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+                }
+            }else if (_selectedButtonColor == nil) {
+                [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+            }
+        }];
+    }
+    if (_selectedButtonColor != nil) {
+        [((UIButton *)self.buttonArray[0]) setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+    }
 }
 
 /**
@@ -390,9 +425,7 @@
  *  viewController delegate methods
  *
  */
-- (void)viewWillAppear:(BOOL)animated {
-    
-}
+
 
 /**
  *  pageViewControllerDataSouce methods
@@ -423,6 +456,20 @@
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed {
     if (completed) {
         self.currentPageIndex = [self.viewControllerArray indexOfObject:[pageViewController.viewControllers lastObject]];
+        if (_selectedButtonColor != nil && _normalButtonColor != nil) {
+            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+                if (idx == self.currentPageIndex) {
+                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+                }else if (idx != self.currentPageIndex) {
+                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+                }
+                //            CGFloat buttonMid = btn.frame.origin.x+btn.frame.size.width/2;
+                //            CGFloat selectorMid = self.animationView.frame.origin.x+self.animationView.frame.size.width/2;
+                //            if ((buttonMid-selectorMid)<2) {
+                //                [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+                //            }
+            }];
+        }
     }
     self.nextPageIndex = self.currentPageIndex;
 }
@@ -436,6 +483,7 @@
     
     id controller = [pendingViewControllers firstObject];
     self.nextPageIndex = [self.viewControllerArray indexOfObject:controller];
+    NSLog(@"%ld", self.nextPageIndex);
 }
 
 
@@ -443,6 +491,52 @@
  *  scrollViewDelegate method
  *
  */
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+//    CGFloat i = scrollView.contentOffset.x/self.view.frame.size.width;
+//    NSInteger j = scrollView.contentOffset.x/self.view.frame.size.width;
+//    CGFloat k = i-j;
+//    NSLog(@"i:%f, j:%ld, k:%f", i, j, k);
+//    if (self.nextPageIndex > self.currentPageIndex) {
+//        if (k > 0.5) {
+//            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+//                if (idx == self.nextPageIndex) {
+//                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+//                }else if (idx != self.nextPageIndex) {
+//                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+//                }
+//            }];
+//        }else if (k < 0.5) {
+////            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+////                if (idx == j+1) {
+////                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+////                }else if (idx != j+1) {
+////                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+////                }
+////            }];
+//        }
+//    }else if (self.nextPageIndex < self.currentPageIndex) {
+//        if (k < 0.5) {
+//            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+//                if (idx == self.nextPageIndex) {
+//                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+//                }else if (idx != self.nextPageIndex) {
+//                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+//                }
+//            }];
+//        }else if (k > 0.5) {
+////            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+////                if (idx == j+1) {
+////                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+////                }else if (idx != j+1) {
+////                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+////                }
+////            }];
+//        }
+//    }
+}
+
+
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self calculateForSelector];
     if (scrollView.contentOffset.x >= self.view.bounds.size.width) {
@@ -515,8 +609,32 @@
 //    NSLog(@"%f, %f, %f, %f", self.animationView.frame.origin.x, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
 }
 
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
-{
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+    
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+//    if (_selectedButtonColor != nil && _normalButtonColor != nil) {
+//        NSInteger pageNumber = scrollView.contentOffset.x/self.view.frame.size.width;
+//        NSLog(@"%ld", pageNumber);
+//        [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+//            if (idx == pageNumber) {
+//                [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+//            }else if (idx != pageNumber) {
+//                [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+//            }
+////            CGFloat buttonMid = btn.frame.origin.x+btn.frame.size.width/2;
+////            CGFloat selectorMid = self.animationView.frame.origin.x+self.animationView.frame.size.width/2;
+////            if ((buttonMid-selectorMid)<2) {
+////                [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+////            }
+//        }];
+//    }
+}
+
+
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     /* Need to calculate max/min offset for *every* page, not just the first and last. */
     CGFloat minXOffset = scrollView.bounds.size.width - (self.currentPageIndex * scrollView.bounds.size.width);
     CGFloat maxXOffset = (([self.viewControllerArray count] - self.currentPageIndex) * scrollView.bounds.size.width);

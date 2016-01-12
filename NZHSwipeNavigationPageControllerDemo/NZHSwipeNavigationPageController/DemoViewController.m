@@ -87,6 +87,8 @@
     
     self.customBottomSelectorController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:70 controllers:viewControllerArray];
     [self.customBottomSelectorController setFlatAnimationalSelector:self.animationView];
+    self.customBottomSelectorController.selectedButtonColor = [UIColor redColor];
+    self.customBottomSelectorController.normalButtonColor = [UIColor whiteColor];
     
     self.customMiddleSelectorController = [[NZHSwipeNavigationPageController alloc]initForBarUnderNavigationWithTitle:@"Decision" andButtonTitles:buttonTextArray barHeight:40 buttonWidth:70 controllers:viewControllerArray];
     [self.customMiddleSelectorController setMiddleAnimationalSelector:animationView1];
