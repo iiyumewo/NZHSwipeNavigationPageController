@@ -305,7 +305,6 @@
             }
         }
     }
-    NSLog(@"after:%ld", self.buttonArray.count);
 }
 
 - (CGRect)calculateFrameOfButtonOfNumber:(NSInteger)number withButtonWidth:(CGFloat)buttonWidth {
@@ -483,7 +482,6 @@
     
     id controller = [pendingViewControllers firstObject];
     self.nextPageIndex = [self.viewControllerArray indexOfObject:controller];
-    NSLog(@"%ld", self.nextPageIndex);
 }
 
 
