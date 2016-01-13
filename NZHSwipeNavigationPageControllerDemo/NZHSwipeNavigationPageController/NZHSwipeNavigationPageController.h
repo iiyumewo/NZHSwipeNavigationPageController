@@ -52,6 +52,8 @@
 @property (nonatomic, strong) UIColor *selectedButtonColor;
 @property (nonatomic, strong) UIColor *normalButtonColor;
 
+@property (nonatomic, assign) BOOL isTappingToScroll;
+
 
 - (instancetype)initForSwipeByNavigationBarWithSubTitles:(NSArray *)subTitles andControllers:(NSArray *)controllers andButtonWidth:(NSUInteger)width;
 - (instancetype)initForBarUnderNavigationWithTitle:(NSString *)title andButtonTitles:(NSArray *)buttonTitleArray barHeight:(CGFloat)barHeight buttonWidth:(CGFloat)buttonWidth controllers:(NSArray *)controllers;
