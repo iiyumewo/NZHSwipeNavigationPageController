@@ -388,8 +388,6 @@
         [self createButtons];
     }
     [self createSelector];
-    NSLog(@"%ld", _buttonArray.count);
-    NSLog(@"%@", _selectedButtonColor);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -501,7 +499,6 @@
     CGFloat i = scrollView.contentOffset.x/self.view.frame.size.width;
     NSInteger j = scrollView.contentOffset.x/self.view.frame.size.width;
     CGFloat k = i-j;
-    NSLog(@"i:%f, j:%ld, k:%f", i, j, k);
     if (self.nextPageIndex > self.currentPageIndex) {
         if (k > 0.5) {
             [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
