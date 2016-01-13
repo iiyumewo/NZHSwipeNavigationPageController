@@ -524,7 +524,7 @@
             }];
         }
     }else if (self.nextPageIndex < self.currentPageIndex) {
-        if (k < 0.5) {
+        if (k < 0.5 && k != 0) {
             [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
                 if (idx == self.nextPageIndex) {
                     [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
@@ -532,7 +532,7 @@
                     [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
                 }
             }];
-        }else if (k > 0.5) {
+        }else if (k > 0.5 && k != 0) {
             [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
                 if (idx == self.nextPageIndex+1) {
                     [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
