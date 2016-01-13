@@ -95,6 +95,7 @@
 - (void)tapButtonScrollToTarget:(UIButton *)sender {
     
     NSInteger index = [self.buttonArray indexOfObject:sender];
+    [self coloredButtonsSelectedOnNumber:index];
    
     __block NZHSwipeNavigationPageController *blockDemo = self;
     if (index < self.currentPageIndex) {
@@ -260,6 +261,7 @@
 }
 
 - (CGFloat)calculateForOriginPointOfSelectorFromLeftOfNumber:(NSInteger)number withSelectorWidth:(CGFloat)selectorWidth {
+//    CGFloat middlePointOfButtonFromeLeft = 0;
     CGFloat middlePointOfButtonFromeLeft = (self.view.bounds.size.width-self.numberOfButtons*self.buttonWidth)/(self.numberOfButtons+1)*(number+1)+self.buttonWidth*number+self.buttonWidth/2;
     CGFloat originPointOfSelectorFromLeft = middlePointOfButtonFromeLeft-selectorWidth/2;
     return originPointOfSelectorFromLeft;
@@ -369,7 +371,7 @@
     
     [self.view addSubview:self.pageViewController.view];
     
-    //    [self.pageViewController didMoveToParentViewController:self];
+        [self.pageViewController didMoveToParentViewController:self];
     
     [self catchScrollView];
     /**
@@ -386,16 +388,22 @@
         [self createButtons];
     }
     [self createSelector];
+    NSLog(@"%ld", _buttonArray.count);
+    NSLog(@"%@", _selectedButtonColor);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self coloredButtonsSelectedOnNumber:0];
+}
+
+- (void)coloredButtonsSelectedOnNumber:(NSInteger)buttonNumber {
     if (_normalButtonColor != nil) {
         [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
             if (_selectedButtonColor != nil) {
-                if (idx == 0) {
+                if (idx == buttonNumber) {
                     [btn setTitleColor:_selectedButtonColor forState:UIControlStateNormal];
-                }else if (idx != 0) {
+                }else if (idx != buttonNumber) {
                     [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
                 }
             }else if (_selectedButtonColor == nil) {
@@ -404,9 +412,10 @@
         }];
     }
     if (_selectedButtonColor != nil) {
-        [((UIButton *)self.buttonArray[0]) setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+        [((UIButton *)self.buttonArray[buttonNumber]) setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
     }
 }
+
 
 /**
  *  catch the scrollView in pageViewController
@@ -462,11 +471,6 @@
                 }else if (idx != self.currentPageIndex) {
                     [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
                 }
-                //            CGFloat buttonMid = btn.frame.origin.x+btn.frame.size.width/2;
-                //            CGFloat selectorMid = self.animationView.frame.origin.x+self.animationView.frame.size.width/2;
-                //            if ((buttonMid-selectorMid)<2) {
-                //                [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
-                //            }
             }];
         }
     }
@@ -490,47 +494,51 @@
  *
  */
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-//    CGFloat i = scrollView.contentOffset.x/self.view.frame.size.width;
-//    NSInteger j = scrollView.contentOffset.x/self.view.frame.size.width;
-//    CGFloat k = i-j;
-//    NSLog(@"i:%f, j:%ld, k:%f", i, j, k);
-//    if (self.nextPageIndex > self.currentPageIndex) {
-//        if (k > 0.5) {
-//            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
-//                if (idx == self.nextPageIndex) {
-//                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
-//                }else if (idx != self.nextPageIndex) {
-//                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
-//                }
-//            }];
-//        }else if (k < 0.5) {
-////            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
-////                if (idx == j+1) {
-////                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
-////                }else if (idx != j+1) {
-////                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
-////                }
-////            }];
-//        }
-//    }else if (self.nextPageIndex < self.currentPageIndex) {
-//        if (k < 0.5) {
-//            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
-//                if (idx == self.nextPageIndex) {
-//                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
-//                }else if (idx != self.nextPageIndex) {
-//                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
-//                }
-//            }];
-//        }else if (k > 0.5) {
-////            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
-////                if (idx == j+1) {
-////                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
-////                }else if (idx != j+1) {
-////                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
-////                }
-////            }];
-//        }
-//    }
+    
+}
+
+- (void)buttonColorChangeDuringDragging:(UIScrollView *)scrollView {
+    CGFloat i = scrollView.contentOffset.x/self.view.frame.size.width;
+    NSInteger j = scrollView.contentOffset.x/self.view.frame.size.width;
+    CGFloat k = i-j;
+    NSLog(@"i:%f, j:%ld, k:%f", i, j, k);
+    if (self.nextPageIndex > self.currentPageIndex) {
+        if (k > 0.5) {
+            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+                if (idx == self.nextPageIndex) {
+                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+                }else if (idx != self.nextPageIndex) {
+                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+                }
+            }];
+        }else if (k < 0.5) {
+            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+                if (idx == self.nextPageIndex-1) {
+                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+                }else if (idx != self.nextPageIndex-1) {
+                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+                }
+            }];
+        }
+    }else if (self.nextPageIndex < self.currentPageIndex) {
+        if (k < 0.5) {
+            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+                if (idx == self.nextPageIndex) {
+                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+                }else if (idx != self.nextPageIndex) {
+                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+                }
+            }];
+        }else if (k > 0.5) {
+            [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+                if (idx == self.nextPageIndex+1) {
+                    [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
+                }else if (idx != self.nextPageIndex+1) {
+                    [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
+                }
+            }];
+        }
+    }
 }
 
 
@@ -602,6 +610,8 @@
     }else if (self.customAnimationBlock != nil) {
         self.customAnimationBlock(self.pageScrollView);
     }
+    
+    [self buttonColorChangeDuringDragging:scrollView];
 //    NSLog(@"didScroll-current:%ld", self.currentPageIndex);
     
 //    NSLog(@"%f, %f, %f, %f", self.animationView.frame.origin.x, self.animationView.frame.origin.y, self.animationView.frame.size.width, self.animationView.frame.size.height);
