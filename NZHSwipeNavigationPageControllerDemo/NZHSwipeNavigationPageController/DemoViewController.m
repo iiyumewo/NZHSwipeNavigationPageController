@@ -55,9 +55,9 @@
     demo4.view.backgroundColor = FLAT_PURPLE;
     demo5.view.backgroundColor = FLAT_DARKPURPLE;
     
-    self.animationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 8)];
+    self.animationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width/5, 8)];
     self.animationView.backgroundColor = [UIColor redColor];
-    self.animationView.layer.cornerRadius = 6.0;
+//    self.animationView.layer.cornerRadius = 6.0;
     self.animationView.layer.opacity = 0.3;
     
     UIView *animationView1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 25)];

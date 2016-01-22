@@ -263,8 +263,12 @@
 
 - (CGFloat)calculateForOriginPointOfSelectorFromLeftOfNumber:(NSInteger)number withSelectorWidth:(CGFloat)selectorWidth {
     //    CGFloat middlePointOfButtonFromeLeft = 0;
-    CGFloat middlePointOfButtonFromeLeft = (self.view.bounds.size.width-self.numberOfButtons*self.buttonWidth)/(self.numberOfButtons+1)*(number+1)+self.buttonWidth*number+self.buttonWidth/2;
+//    CGFloat middlePointOfButtonFromeLeft = (self.view.bounds.size.width-self.numberOfButtons*self.buttonWidth)/(self.numberOfButtons+1)*(number+1)+self.buttonWidth*number+self.buttonWidth/2;
+    CGFloat middlePointOfButtonFromeLeft = self.view.frame.size.width/self.numberOfButtons/2.f*(number*2.f+1.f);
     CGFloat originPointOfSelectorFromLeft = middlePointOfButtonFromeLeft-selectorWidth/2;
+//    NSLog(@"selectorWidth:%f", selectorWidth);
+//    NSLog(@"middlePointOfButtonFromeLeft:%f", middlePointOfButtonFromeLeft);
+//    NSLog(@"originPointOfSelectorFromLeft:%f", originPointOfSelectorFromLeft);
     return originPointOfSelectorFromLeft;
 }
 
@@ -279,8 +283,9 @@
 - (void)createButtons {
     if (self.marginOfButton == 0) {
         for (int i = 0; i < self.numberOfButtons; i++) {
-            CGFloat originPointOfButtonFromeLeft = (self.view.bounds.size.width-self.numberOfButtons*self.buttonWidth)/(self.numberOfButtons+1)*(i+1) + self.buttonWidth*i;
-            CGRect rect = CGRectMake (originPointOfButtonFromeLeft, 0, self.buttonWidth, self.navigationController.navigationBar.frame.size.height);
+//            CGFloat originPointOfButtonFromeLeft = (self.view.bounds.size.width-self.numberOfButtons*self.buttonWidth)/(self.numberOfButtons+1)*(i+1) + self.buttonWidth*i;
+//            CGRect rect = CGRectMake (originPointOfButtonFromeLeft, 0, self.buttonWidth, self.navigationController.navigationBar.frame.size.height);
+            CGRect rect = [self calculateFrameOfButtonOfNumber:i withButtonWidth:70];
             UIButton *button = [[UIButton alloc]initWithFrame:rect];
             [button setTitle:[self.subTitleArray objectAtIndex:i]
                     forState:UIControlStateNormal];
@@ -318,7 +323,7 @@
         if (number == 0) {
             originPointOfButtonFromeLeft = self.marginOfButton;
             rect = CGRectMake(originPointOfButtonFromeLeft, 0, self.buttonWidth, buttonBarHeight);
-            NSLog(@"%f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+//            NSLog(@"%f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
             return rect;
         }else if (number != 0) {
             CGFloat equalDistance = (self.buttonBar.frame.size.width-self.marginOfButton*2-self.buttonWidth*self.numberOfButtons)/(self.numberOfButtons-1);
@@ -326,6 +331,13 @@
             rect = CGRectMake(originPointOfButtonFromeLeft, 0, self.buttonWidth, buttonBarHeight);
             return rect;
         }
+    }else if (self.marginOfButton == 0) {
+        CGRect rect = CGRectZero;
+        CGFloat buttonBarHeight = CGRectGetHeight(self.buttonBar.frame);
+        CGFloat originPointOfButtonFromLeft = 0;
+        originPointOfButtonFromLeft = CGRectGetWidth(self.view.frame)/self.numberOfButtons/2*(number*2+1)-self.buttonWidth/2;
+        rect = CGRectMake(originPointOfButtonFromLeft, 0, self.buttonWidth, buttonBarHeight);
+        return rect;
     }
     NSLog(@"calculating button frame error");
     return CGRectZero;
@@ -504,7 +516,7 @@
     CGFloat i = scrollView.contentOffset.x/self.view.frame.size.width;
     NSInteger j = scrollView.contentOffset.x/self.view.frame.size.width;
     CGFloat k = i-j;
-    NSLog(@"i:%f, j:%ld, k:%f", i, j, k);
+//    NSLog(@"i:%f, j:%ld, k:%f", i, j, k);
     if (self.nextPageIndex > self.currentPageIndex) {
         if (k > 0.5) {
             [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
@@ -558,11 +570,12 @@
      *
      */
     CGFloat currentOriginPoint = [self calculateForOriginPointOfSelectorFromLeftOfNumber:self.currentPageIndex withSelectorWidth:SELECTORWIDTH];
-    CGFloat distance = self.view.bounds.size.width/(self.numberOfButtons+1)+8;
+    CGFloat distance = self.view.frame.size.width/(self.numberOfButtons);
     CGFloat viewX = scrollView.contentOffset.x-self.view.bounds.size.width;
     CGFloat proportion = viewX/self.view.bounds.size.width;
     CGFloat movingX = proportion*distance;
     self.selectorX = currentOriginPoint+movingX;
+    NSLog(@"%f", currentOriginPoint+movingX);
     
     /* The iOS page view controller API is broken.  It lies to us and tells us
      that the currently presented view hasn't changed, but under the hood, it
