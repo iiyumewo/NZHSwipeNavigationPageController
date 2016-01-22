@@ -104,7 +104,6 @@
             [self.pageViewController setViewControllers:@[[self.viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete) {
                 if (complete) {
                     blockDemo.currentPageIndex = i;
-                    
                     //                    NSLog(@"reverseComplete-current:%ld", self.currentPageIndex);
                 }
             }];
@@ -401,13 +400,19 @@
         [self createButtons];
     }
     [self createSelector];
+    
+    [self coloredButtonsSelectedOnNumber:0];
     NSLog(@"%ld", _buttonArray.count);
     NSLog(@"%@", _selectedButtonColor);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    if (self.hasColoredButtonTitles == NO) {
+        [self coloredButtonsSelectedOnNumber:0];
+        self.hasColoredButtonTitles = YES;
+    }
     [super viewWillAppear:animated];
-    [self coloredButtonsSelectedOnNumber:0];
+    
 }
 
 - (void)coloredButtonsSelectedOnNumber:(NSInteger)buttonNumber {
