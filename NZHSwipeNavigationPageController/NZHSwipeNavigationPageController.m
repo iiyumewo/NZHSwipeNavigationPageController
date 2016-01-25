@@ -100,27 +100,21 @@
     __block NZHSwipeNavigationPageController *blockDemo = self;
     if (index < self.currentPageIndex) {
         for (NSInteger i = self.currentPageIndex-1; i >= index; i--) {
-            //            NSLog(@"%ld", self.currentPageIndex);
             [self.pageViewController setViewControllers:@[[self.viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete) {
                 if (complete) {
                     blockDemo.currentPageIndex = i;
-                    //                    NSLog(@"reverseComplete-current:%ld", self.currentPageIndex);
                 }
             }];
         }
     }else if(index > self.currentPageIndex) {
-        //        NSLog(@"current:%ld", self.currentPageIndex);
         for (NSInteger i = self.currentPageIndex+1; i<=index; i++) {
-            //            NSLog(@"i:%ld", i);
             [self.pageViewController setViewControllers:@[[self.viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL complete) {
                 if (complete) {
                     blockDemo.currentPageIndex = i;
-                    //                    NSLog(@"forwardComplete-current:%ld", self.currentPageIndex);
                 }
             }];
         }
     }
-    //    NSLog(@"%ld", blockDemo.currentPageIndex);
 }
 
 
@@ -402,8 +396,8 @@
     [self createSelector];
     
     [self coloredButtonsSelectedOnNumber:0];
-    NSLog(@"%ld", _buttonArray.count);
-    NSLog(@"%@", _selectedButtonColor);
+//    NSLog(@"%ld", _buttonArray.count);
+//    NSLog(@"%@", _selectedButtonColor);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -416,7 +410,7 @@
 }
 
 - (void)coloredButtonsSelectedOnNumber:(NSInteger)buttonNumber {
-    NSLog(@"%ld", buttonNumber);
+//    NSLog(@"%ld", buttonNumber);
     if (_normalButtonColor != nil) {
         [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
             [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
@@ -564,6 +558,10 @@
 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+//    NSLog(@"%f", scrollView.contentOffset.x);
+//    NSLog(@"current:%ld", self.currentPageIndex);
+//    NSLog(@"next:%ld", self.nextPageIndex);
+//    NSLog(@"%f", self.lastPosition);
     [self calculateForSelector];
     if (scrollView.contentOffset.x >= self.view.bounds.size.width) {
         self.positionRatio = (scrollView.contentOffset.x - self.view.bounds.size.width)/self.view.bounds.size.width;
@@ -580,7 +578,7 @@
     CGFloat proportion = viewX/self.view.bounds.size.width;
     CGFloat movingX = proportion*distance;
     self.selectorX = currentOriginPoint+movingX;
-    NSLog(@"%f", currentOriginPoint+movingX);
+//    NSLog(@"%f", currentOriginPoint+movingX);
     
     /* The iOS page view controller API is broken.  It lies to us and tells us
      that the currently presented view hasn't changed, but under the hood, it
@@ -588,29 +586,28 @@
      way to detect this brain damage is to notice that the content offset is
      discontinuous, and pretend that the page changed.
      */
-    if (self.nextPageIndex > self.currentPageIndex) {
-        /* Scrolling forwards */
-        
-        if (scrollView.contentOffset.x < (self.lastPosition - (.9 * scrollView.bounds.size.width))) {
-            self.currentPageIndex = self.nextPageIndex;
-            //            [self.pageControl setCurrentPage:self.currentIndex];
-        }
-    } else {
-        /* Scrolling backwards */
-        
-        if (scrollView.contentOffset.x > (self.lastPosition + (.9 * scrollView.bounds.size.width))) {
-            //            self.currentPageIndex = self.nextPageIndex;
-            //            [self.pageControl setCurrentPage:self.currentIndex];
-        }
-    }
+//    if (self.nextPageIndex >= self.currentPageIndex) {
+//        /* Scrolling forwards */
+////        NSLog(@"scrollView.contentOffset.x:%f", scrollView.contentOffset.x);
+////        NSLog(@"self.lastPosition:%f", self.lastPosition);
+////        NSLog(@"self.lastPosition - (0.9 * scrollView.bounds.size.width):%f", self.lastPosition - (0.9 * scrollView.bounds.size.width));
+//        if (scrollView.contentOffset.x < (self.lastPosition - (0.9 * scrollView.bounds.size.width))) {
+//            self.currentPageIndex = self.nextPageIndex;
+//        }
+//    } else {
+//        /* Scrolling backwards */
+//        NSLog(@"current:%ld", self.currentPageIndex);
+//        NSLog(@"next:%ld", self.nextPageIndex);
+//        NSLog(@"scrollView.contentOffset.x:%f", scrollView.contentOffset.x);
+//        NSLog(@"self.lastPosition:%f", self.lastPosition);
+//        if (scrollView.contentOffset.x > (self.lastPosition + (.9 * scrollView.bounds.size.width))) {
+//                        self.currentPageIndex = self.nextPageIndex;
+//        }
+//    }
     
     /* Need to calculate max/min offset for *every* page, not just the first and last. */
     CGFloat minXOffset = scrollView.bounds.size.width - (self.currentPageIndex * scrollView.bounds.size.width);
     CGFloat maxXOffset = (([self.viewControllerArray count] - self.currentPageIndex) * scrollView.bounds.size.width);
-    
-    //    NSLog(@"Page: %ld NextPage: %ld X: %lf MinOffset: %lf MaxOffset: %lf\n", (long)self.currentPageIndex, (long)self.nextPageIndex,
-    //          (double)scrollView.contentOffset.x,
-    //          (double)minXOffset, (double)maxXOffset);
     
     if (!self.shouldBounce) {
         CGRect scrollBounds = scrollView.bounds;
