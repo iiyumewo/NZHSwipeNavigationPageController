@@ -14,6 +14,10 @@
 
 @interface NZHSwipeNavigationPageController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIScrollViewDelegate>
 
+@property (nonatomic, weak) UIPageControl *pageControl;
+
+@property (nonatomic, assign) BOOL hasReachedEdge;
+
 @end
 
 @implementation NZHSwipeNavigationPageController
@@ -472,8 +476,9 @@
  *
  */
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed {
+    
     if (completed) {
-        self.currentPageIndex = [self.viewControllerArray indexOfObject:[pageViewController.viewControllers lastObject]];
+        self.currentPageIndex = [self.viewControllerArray indexOfObject:[pageViewController.viewControllers objectAtIndex:0]];
         if (_selectedButtonColor != nil && _normalButtonColor != nil) {
             [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
                 if (idx == self.currentPageIndex) {
@@ -485,6 +490,7 @@
         }
     }
     self.nextPageIndex = self.currentPageIndex;
+    
 }
 
 - (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController
@@ -496,6 +502,7 @@
     
     id controller = [pendingViewControllers firstObject];
     self.nextPageIndex = [self.viewControllerArray indexOfObject:controller];
+    
 }
 
 
@@ -517,16 +524,18 @@
     CGFloat k = i-j;
 //    NSLog(@"i:%f, j:%ld, k:%f", i, j, k);
     if (self.nextPageIndex > self.currentPageIndex) {
-        if (k > 0.5) {
+        if (k > 0.5 || j == 2) {
             [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+//                NSLog(@">0.5：%ld", self.nextPageIndex);
                 if (idx == self.nextPageIndex) {
                     [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
                 }else if (idx != self.nextPageIndex) {
                     [btn setTitleColor:self.normalButtonColor forState:UIControlStateNormal];
                 }
             }];
-        }else if (k < 0.5) {
+        }else if (k < 0.5 && j != 2) {
             [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+//                NSLog(@"<0.5：%ld", self.nextPageIndex);
                 if (idx == self.nextPageIndex-1) {
                     [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
                 }else if (idx != self.nextPageIndex-1) {
@@ -537,6 +546,7 @@
     }else if (self.nextPageIndex < self.currentPageIndex) {
         if (k < 0.5 && k != 0) {
             [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+//                NSLog(@"<0.5：%ld", self.nextPageIndex);
                 if (idx == self.nextPageIndex) {
                     [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
                 }else if (idx != self.nextPageIndex) {
@@ -545,6 +555,7 @@
             }];
         }else if (k > 0.5 && k != 0) {
             [self.buttonArray enumerateObjectsUsingBlock:^(UIButton *btn, NSUInteger idx, BOOL *stop) {
+//                NSLog(@">0.5：%ld", self.nextPageIndex);
                 if (idx == self.nextPageIndex+1) {
                     [btn setTitleColor:self.selectedButtonColor forState:UIControlStateNormal];
                 }else if (idx != self.nextPageIndex+1) {
@@ -558,16 +569,28 @@
 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    NSLog(@"%f", scrollView.contentOffset.x);
-//    NSLog(@"current:%ld", self.currentPageIndex);
-//    NSLog(@"next:%ld", self.nextPageIndex);
-//    NSLog(@"%f", self.lastPosition);
+    NSLog(@"current:%ld", self.currentPageIndex);
+    NSLog(@"next:%ld", self.nextPageIndex);
+    NSLog(@"%f", self.lastPosition);
     [self calculateForSelector];
     if (scrollView.contentOffset.x >= self.view.bounds.size.width) {
         self.positionRatio = (scrollView.contentOffset.x - self.view.bounds.size.width)/self.view.bounds.size.width;
     }else if (scrollView.contentOffset.x <= self.view.bounds.size.width) {
         self.positionRatio = (self.view.bounds.size.width-scrollView.contentOffset.x)/self.view.bounds.size.width;
     }
+    
+//    if (self.hasReachedEdge == YES) {
+//        NSLog(@"已经碰壁");
+//        [scrollView setContentOffset:CGPointMake(scrollView.bounds.size.width*2, 0)];
+//    }
+//    
+//    if (scrollView.contentOffset.x < 0) {
+//        NSLog(@"===========");
+//        [scrollView setContentOffset:CGPointMake(0, 0)];
+////        self.hasReachedEdge = YES;
+//        
+//    }
+    
     /**
      *  Fundational calculation.
      *
@@ -593,6 +616,7 @@
 ////        NSLog(@"self.lastPosition - (0.9 * scrollView.bounds.size.width):%f", self.lastPosition - (0.9 * scrollView.bounds.size.width));
 //        if (scrollView.contentOffset.x < (self.lastPosition - (0.9 * scrollView.bounds.size.width))) {
 //            self.currentPageIndex = self.nextPageIndex;
+//            
 //        }
 //    } else {
 //        /* Scrolling backwards */
@@ -621,6 +645,14 @@
         [scrollView setBounds:scrollBounds];
     }
     self.lastPosition = scrollView.contentOffset.x;
+    
+    
+    //from stackOverFlow
+    //    if (self.currentPageIndex == 0 && scrollView.contentOffset.x < scrollView.bounds.size.width) {
+    //        scrollView.contentOffset = CGPointMake(scrollView.bounds.size.width, 0);
+    //    } else if (self.currentPageIndex == self.viewControllerArray.count-1 && scrollView.contentOffset.x > scrollView.bounds.size.width) {
+    //        scrollView.contentOffset = CGPointMake(scrollView.bounds.size.width, 0);
+    //    }
     
     if (self.customAnimationBlock == nil) {
         CGRect viewRect = CGRectMake(self.selectorX, self.selectorY, self.animationView.frame.size.width, self.animationView.frame.size.height);
@@ -658,12 +690,23 @@
     ////            }
     //        }];
     //    }
+    self.hasReachedEdge = NO;
 }
 
-
-
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    /* Need to calculate max/min offset for *every* page, not just the first and last. */
+//    NSLog(@"velocity:%f %f", velocity.x, velocity.y);
+//    velocity = CGPointMake(1, 0);
+//    NSLog(@"velocity:%f %f", velocity.x, velocity.y);
+//    if (self.currentPageIndex == 0 && scrollView.contentOffset.x <= scrollView.bounds.size.width) {
+//        *targetContentOffset = CGPointMake(scrollView.bounds.size.width, 0);
+//    } else if (self.currentPageIndex == self.viewControllerArray.count-1 && scrollView.contentOffset.x >= scrollView.bounds.size.width) {
+//        *targetContentOffset = CGPointMake(scrollView.bounds.size.width, 0);
+//    } else if (scrollView.contentOffset.x >= scrollView.bounds.size.width) {
+//        *targetContentOffset = CGPointMake(scrollView.bounds.size.width*2, 0);
+//    }
+    
+    
+//     Need to calculate max/min offset for *every* page, not just the first and last. 
     CGFloat minXOffset = scrollView.bounds.size.width - (self.currentPageIndex * scrollView.bounds.size.width);
     CGFloat maxXOffset = (([self.viewControllerArray count] - self.currentPageIndex) * scrollView.bounds.size.width);
     
@@ -675,6 +718,22 @@
         }
     }
 }
+
+
+
+//- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+//    /* Need to calculate max/min offset for *every* page, not just the first and last. */
+//    CGFloat minXOffset = scrollView.bounds.size.width - (self.currentPageIndex * scrollView.bounds.size.width);
+//    CGFloat maxXOffset = (([self.viewControllerArray count] - self.currentPageIndex) * scrollView.bounds.size.width);
+//    
+//    if (!self.shouldBounce) {
+//        if (scrollView.contentOffset.x <= minXOffset) {
+//            *targetContentOffset = CGPointMake(minXOffset, 0);
+//        } else if (scrollView.contentOffset.x >= maxXOffset) {
+//            *targetContentOffset = CGPointMake(maxXOffset, 0);
+//        }
+//    }
+//}
 
 
 
